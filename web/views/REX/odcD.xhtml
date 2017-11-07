@@ -1,0 +1,422 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <h:body>
+        <ui:composition template="./../../WEB-INF/templates/REX_SideBarTemplate.xhtml">
+            
+            <ui:define name="content">
+                <div class="content" id="content" style="display:none;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">
+                                        Editar Orden de Compra
+                                    </h4>
+                                <!--<p class="category">Listado</p>-->
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm">
+                                        <h:inputHidden id="idHidden" value="#{odcsCRS.rowID}"/>
+                                        <div class="row" style="display:none">
+                                            <div class="col-md-2" >
+                                                <div class="form-group">
+                                                    <h:outputLabel id="ID">ID</h:outputLabel>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" value="#{odcsCVS.model.id_REX_OrdenDeCompra}" rendered="#{odcsCVS.model.id_REX_OrdenDeCompra!=0}"/>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" rendered="#{odcsCVS.model.id_REX_OrdenDeCompra==0}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Folio</h:outputLabel>
+                                                    <h:inputText styleClass="form-control" a:placeholder="FOLIO" disabled="true" value="#{odcsCVS.model.folio}" rendered="#{odcsCVS.model.id_REX_OrdenDeCompra!=0}"/>
+                                                    <h:inputText styleClass="form-control" a:placeholder="FOLIO" disabled="true" rendered="#{odcsCVS.model.id_REX_OrdenDeCompra==0}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Obra</h:outputLabel>  
+                                                    <h:selectOneMenu id="OB" a:size="#{odcsCVS.obras.display}" value="#{odcsCVS.model.REX_Obra.id_REX_Obra}">
+                                                        <f:selectItem itemLabel="#{odcsCVS.model.REX_Obra.nombre}" itemValue="#{odcsCVS.model.REX_Obra.id_REX_Obra}" itemDisabled="#{odcsCVS.obras.length>0}"/>
+                                                        <f:selectItems value="#{odcsCVS.obras.list}" var="c" itemValue="#{c.id}" itemLabel="#{c.label}"/>
+                                                        <f:ajax event="focus" render="OB" listener="#{odcsCVS.loadObrasList}" onevent="function(data){onClikVL(data,1,'OB');}" disabled="#{odcsCVS.obras.length>0}"/>
+                                                        <f:ajax event="focus" render="@none" onevent="function(data){onClikVL(data,0,'SS1');}" disabled="#{odcsCVS.proveedores.length lt 1}"/>
+                                                        <f:ajax event="change" listener="#{odcsCVS.checkForChanges}" render="mainForm:mainFormBtnF"  disabled="#{odcsCVS.model.estatus>2 and !loginBean.usuario.directivo}"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Tipo</h:outputLabel>  
+                                                    <h:selectOneMenu id="TI" styleClass="form-control" a:data-prv="#{odcsCVS.model.tipo}" value="#{odcsCVS.model.tipo}" onchange="onTipoChange($(this));">
+                                                        <f:selectItem itemValue="Acero"/>
+                                                        <f:selectItem itemValue="Plástico"/>
+                                                        <f:selectItem itemValue="Otro"/>
+                                                        <f:ajax event="change" listener="#{odcsCVS.checkForChanges}" render="PV mainFormBtnF" onevent="function(data){if(data.status==='success')afterTipoChange();}"  disabled="#{odcsCVS.model.estatus>2 and !loginBean.usuario.directivo}"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Proveedor</h:outputLabel>  
+                                                    <h:selectOneMenu id="PV" a:size="#{odcsCVS.proveedores.display}" value="#{odcsCVS.model.REX_Proveedor.id_REX_Proveedor}" a:data-prv="#{odcsCVS.model.REX_Proveedor.id_REX_Proveedor}" onchange="var $t=$(this),val=Number($t.val()),prv=Number($t.data('prv'));if(prv>0){if(val!==prv)return onProveedorChange($t,prv,val);}else $t.data('prv',val);">
+                                                        <f:selectItem itemLabel="#{odcsCVS.model.REX_Proveedor.nombre}" itemValue="#{odcsCVS.model.REX_Proveedor.id_REX_Proveedor}" itemDisabled="#{odcsCVS.proveedores.length>0}"/>
+                                                        <f:selectItems value="#{odcsCVS.proveedores.list}" var="c" itemValue="#{c.id}" itemLabel="#{c.label}"/>
+                                                        <f:ajax event="focus" render="PV" listener="#{odcsCVS.loadProveedoresList}" onevent="function(data){onClikVL(data,2,'PV');}" disabled="#{odcsCVS.proveedores.length>0}"/>
+                                                        <f:ajax event="focus" render="@none" onevent="function(data){onClikVL(data,0,'SS2');}" disabled="#{odcsCVS.proveedores.length lt 1}"/>
+                                                        <f:ajax event="change" listener="#{odcsCVS.checkForChanges}" render="mainForm:mainFormBtnF"  disabled="#{odcsCVS.model.estatus>2 and !loginBean.usuario.directivo}"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Fecha Expedición</h:outputLabel>
+                                                    <div class="input-group date">
+                                                        <h:inputText id="FX" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{odcsCVS.model.fechaExpedicionString}">
+                                                            <f:ajax event="change" listener="#{odcsCVS.checkForChanges}" render="mainForm:mainFormBtnF"  disabled="#{odcsCVS.model.estatus>2 and !loginBean.usuario.directivo}"/>
+                                                        </h:inputText>
+                                                        <div class="input-group-addon">
+                                                            <span class="pe-7s-date" style="font-size:25px;"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Fecha Entrega</h:outputLabel>
+                                                    <div class="input-group date">
+                                                        <h:inputText id="FE" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{odcsCVS.model.fechaEntregaString}">
+                                                            <f:ajax event="change" listener="#{odcsCVS.checkForChanges}" render="mainForm:mainFormBtnF"  disabled="#{odcsCVS.model.estatus>2 and !loginBean.usuario.directivo}"/>
+                                                        </h:inputText>
+                                                        <div class="input-group-addon">
+                                                            <span class="pe-7s-date" style="font-size:25px;"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Observaciones</h:outputLabel>
+                                                    <h:inputTextarea id="NT" rows="5" styleClass="form-control" a:placeholder="Observaciones" value="#{odcsCVS.model.notas}">
+                                                        <f:ajax event="change" listener="#{odcsCVS.checkForChanges}" render="mainForm:mainFormBtnF"  disabled="#{odcsCVS.model.estatus>2 and !loginBean.usuario.directivo}"/>
+                                                    </h:inputTextarea>
+                                                </div>
+                                            </div>
+                                        </div>                                   
+                                        <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;"  rendered="#{3>odcsCVS.model.estatus and !loginBean.usuario.directivo}">
+                                            <f:ajax listener="#{odcsCVS.updateFormServicios}" render="mainForm" onevent="reRunJSCode"/>
+                                        </h:commandButton>
+                                        <h:commandButton id="mainFormBtnF" class="#{odcsCVS.cambios?'btn btn-success btn-fill pull-right':'btn btn-success pull-right'}" value="Guardar Cambios" onclick="fromAction(#{odcsCVS.cambios});return false;"/>
+                                        <div class="clearfix"/>
+                                    </h:form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">Estatus</h4>
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm2">
+                                        <h:inputHidden id="idHidden2" value="#{obrasCRS.rowID}"/>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel value="La orden se encuentra:"/>
+                                                    <h:selectOneMenu disabled="#{odcsCVS.model.estatus>2 and !loginBean.usuario.directivo}" id="ES" styleClass="form-control" value="#{odcsCVS.model.estatus}">
+                                                        <f:selectItem itemValue="1" itemLabel="En Proceso" itemDisabled="#{odcsCVS.model.estatus>2 and !loginBean.usuario.directivo}"/>
+                                                        <f:selectItem itemValue="2" itemLabel="Pendiente" itemDisabled="#{loginBean.usuario.directivo}"/>
+                                                        <f:selectItem itemValue="3" itemLabel="Autorizada" itemDisabled="#{!loginBean.usuario.directivo}"/>
+                                                        <f:selectItem itemValue="4" itemLabel="Negada" itemDisabled="#{!loginBean.usuario.directivo}"/>
+                                                        <f:ajax event="change" listener="#{odcsCVS.checkForChanges}" render="mainForm:mainFormBtnF ES" disabled="#{odcsCVS.model.estatus>2 and !loginBean.usuario.directivo}"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h:commandButton id="odcPDF" class="btn btn-success btn-fill pull-right" value="Descargar" actionListener="#{odcsCVS.downloadODC}"/>
+                                            </div>
+                                        </div>
+                                    </h:form>
+                                    <div class="clearfix"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="header-with-icon">
+                                    <div class="col-md-11">
+                                        <h4 class="title">Materiales</h4>
+                                    </div>
+                                    <div class="col-md-1" style="text-align:end">
+                                        <h:panelGroup rendered="#{!loginBean.usuario.directivo and 3>odcsCVS.model.estatus}">
+                                            <i class="pe-7s-plus" data-msg="un material" onclick="var $t=$('#mainForm\\:ID');if(1>$t.next().val())alert('Por favor guarde los cambios primero.');else{$t=$t.closest('.row').siblings('.row').eq(1).children().find('#mainForm\\:PV');if(1>$t.val())alert('Seleccione un proveedor por favor.');else $(this).trigger('onfocus');}" onfocus="addPortalRow('pODC',5,new Array('disabled','1,5','select','2_unique','number','3_$_f_2_r,4__l_3_r,5_$_f_2_r'));"/>
+                                        </h:panelGroup>
+                                    </div>
+                                </div>
+                                    <div class="col-md-12">
+                                        <div class="content table-responsive table-full-width">
+                                            <h:form id="pODCF" style="position:absolute;z-index:999;" rendered="#{!loginBean.usuario.directivo and 3>odcsCVS.model.estatus}">
+                                                <h:inputHidden id="commit" value="#{odcsCVS.portalValues}"/>
+                                                <h:commandButton id="reset" style="display:none;">
+                                                    <f:ajax event="click" listener="#{odcsCVS.resetPortal}" execute="reset" render="prvL totalTH" onevent="function(data){if(data.status==='success')precioGloabl();}"/>
+                                                    <f:ajax event="focus" listener="#{odcsCVS.resetProveedor}" execute="reset" render="prvL totalTH" onevent="function(data){if(data.status==='success')precioGloabl();}"/>
+                                                </h:commandButton>
+                                                <h:selectOneMenu id="prvL" styleClass="form-control unique" a:tabindex="-1" a:size="#{odcsCVS.materiales.display}" style="width:0;opacity:0;">
+                                                    <f:selectItems value="#{odcsCVS.materiales.list}" var="c" itemValue="#{c.id}" itemLabel="#{c.label}"/>
+                                                    <f:ajax event="focus" render="prvL" listener="#{odcsCVS.loadMaterialesList}" onevent="function(data){loadSourceSelect(data,trNumber,'pODCF\\:prvL');}" disabled="#{odcsCVS.materiales.length>0}"/>
+                                                </h:selectOneMenu>
+                                                <h:commandButton id="btn" style="display:none;" onmousedown="return beforePortalCommit($(this));">
+                                                    <f:ajax event="click" listener="#{odcsCVS.commitPortal}" execute="commit" render="commit totalTH" onevent="function(data){if(data.status==='success'){replaceRowType(#{false},'@tableRowNumber');precioGloabl();}}"/>
+                                                </h:commandButton>
+                                                <h:commandButton id="btnD" style="display:none;">
+                                                    <f:ajax event="click" listener="#{odcsCVS.deleteFromPortal}" execute="commit" render="commit totalTH" onevent="function(data){if(data.status==='success')precioGloabl();}"/>
+                                                </h:commandButton>
+                                            </h:form>
+                                            <table id="pODCT" class="table table-hover table-striped portal" data-rows="#{odcsCVS.model.REX_ODCdetalle.size()}" data-sort="-1_A">
+                                                <thead id="pHead">
+                                                    <th width="10%">ID</th>
+                                                    <th width="35%">Material</th>
+                                                    <th width="15%" style="text-align:right" onchange="precioPorLinea(false,this);">P. Unitario</th>
+                                                    <th width="15%" style="text-align:right" onchange="precioPorLinea(true,this);">Cantidad</th>
+                                                    <th width="15%" style="text-align:right">Precio</th>
+                                                    <th width="10%" style="#{(!loginBean.usuario.directivo and 3>odcsCVS.model.estatus)?'':'display:none;'}"></th>
+                                                </thead>
+                                                <tbody id="pODC">
+                                                    <ui:repeat var="p" value="#{odcsCVS.model.REX_ODCdetalle}" varStatus="vs" rendered="#{!loginBean.usuario.directivo and 3>odcsCVS.model.estatus}">
+                                                        <tr data-row="#{vs.index+1}">
+                                                            <td data-id="#{p.id_REX_OrdenDeCompraDetalle}">#{p.REX_Material.id_REX_Material}</td>
+                                                            <td class="unique" data-value="#{p.REX_Material.id_REX_Material}">#{p.REX_Material.nombre}</td>
+                                                            <td class="number" style="text-align:right">$<h:outputText value="#{p.precio}"><f:convertNumber groupingUsed="true" minFractionDigits="2" maxFractionDigits="2" locale="en-US"/></h:outputText></td>
+                                                            <td class="number" style="text-align:right"><h:outputText value="#{p.cantidad}"><f:convertNumber groupingUsed="true" minFractionDigits="3" maxFractionDigits="3" locale="en-US"/></h:outputText></td>
+                                                            <td class="number" style="text-align:right">$<h:outputText value="#{p.subtotal}"><f:convertNumber groupingUsed="true" minFractionDigits="2" maxFractionDigits="2" locale="en-US"/></h:outputText></td>
+                                                            <td style='padding:0'><center style='padding:0'><i class='inPortal pe-7s-note' onclick="editRow();"/><i class='inPortal pe-7s-trash' onclick="deleteFromPortal()"/></center></td>
+                                                        </tr>
+                                                    </ui:repeat>
+                                                    <ui:repeat var="d" value="#{odcsCVS.model.REX_ODCdetalle}" varStatus="vsd" rendered="#{loginBean.usuario.directivo or (!loginBean.usuario.directivo and odcsCVS.model.estatus>2)}">
+                                                        <tr data-row="#{vsd.index+1}">
+                                                            <td data-id="#{d.id_REX_OrdenDeCompraDetalle}">#{d.REX_Material.id_REX_Material}</td>
+                                                            <td class="unique" data-value="#{d.REX_Material.id_REX_Material}">#{d.REX_Material.nombre}</td>
+                                                            <td class="number" style="text-align:right">$<h:outputText value="#{d.precio}"><f:convertNumber groupingUsed="true" minFractionDigits="2" maxFractionDigits="2" locale="en-US"/></h:outputText></td>
+                                                            <td class="number" style="text-align:right"><h:outputText value="#{d.cantidad}"><f:convertNumber groupingUsed="true" minFractionDigits="3" maxFractionDigits="3" locale="en-US"/></h:outputText></td>
+                                                            <td class="number" style="text-align:right">$<h:outputText value="#{d.subtotal}"><f:convertNumber groupingUsed="true" minFractionDigits="2" maxFractionDigits="2" locale="en-US"/></h:outputText></td>
+                                                        </tr>
+                                                    </ui:repeat>
+                                                </tbody>
+                                            </table>
+                                            <table id="totalT" class="table" style="margin:0;padding:0;margin-top:-20px">
+                                                <thead>
+                                                    <th width="10%" style="visibility:hidden"></th>
+                                                    <th width="35%" style="visibility:hidden"></th>
+                                                    <th width="15%" style="text-align:right;visibility:hidden"></th>
+                                                    <th width="15%" style="text-align:right;visibility:hidden"></th>
+                                                    <th width="15%" style="text-align:right;border:0;font-size:15px;color:black;">TOTAL <h:outputText id="totalTH" value="#{odcsCVS.model.total}"/></th>
+                                                    <th width="10%" style="#{(!loginBean.usuario.directivo and 3>odcsCVS.model.estatus)?'visibility:hidden':'display:none;'}"></th>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"/>
+                            </div>
+                        </div>
+                    </div>
+                    <h:form id="deleteRecord" style="display:none;"><h:commandLink id="Btn" onclick="return deletionAlert()" action="#{odcsCVS.deleteREX_Proveedor()}">
+                        <i class="pe-7s-trash"/>
+                    </h:commandLink></h:form>
+                </div>
+            </div>
+            <h:outputStylesheet library="css" name="portalsCSS.css"/>
+            <h:outputStylesheet library="css" name="valuelists.css"/>
+            <h:outputStylesheet library="css" name="bootstrap-datepicker3.css"/>
+            <h:outputScript library="js" name="NumberFields.js"/>
+            <h:outputScript library="js" name="valuelistcontrol.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.min.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.es.js"/>
+            <h:outputScript library="js" name="portalActions.js"/>
+            <script type="text/javascript">
+                $(function(){
+                    runJScode(false,true,true);
+                    loadDatePickers();
+                    precioGloabl();
+                    $("#content").css("display","block");
+                    $('a:not(#deleteRecordBtn,#deleteRecord\\:Btn)').click(function(e){
+                        if($('#mainForm\\:mainFormBtnF.btn-fill').size()>0 || $(".modPR,.newPR").size()>0)
+                            return confirm("No ha guardado los cambios realizados ¿Desea salir sin guardar?");
+                        else return true;
+                    });
+                });
+                function deletionAlert()
+                {
+                    return confirm('¿Desea eliminar la orden de compra actual?');
+                }
+                function fromAction(p)
+                {
+                    if(p)
+                        document.getElementById('mainForm:mainFormBtn').click();
+                }
+                function onClikVL(data,n,current)
+                {
+                    if(data.status==='success')
+                    {
+                        if(n===0)
+                            document.getElementById(current).click();
+                        else
+                            afterAjaxSelect("mainForm\\:"+current,n); 
+                    }
+                }
+                function loadDatePickers(){
+                    $('.date').each(function(){
+                        var $dp=$(this);
+                        var container=$dp.length>0 ? $dp.parent() : "body";
+                        $dp.datepicker({
+                            language: 'es',
+                            format: 'dd/mm/yyyy',
+                            container: container,
+                            showOnFocus: true,
+                            todayHighlight: true,
+                            autoclose: true
+                        });
+                    });
+                }
+                function precioPorLinea(cantidad,$this)
+                {
+                    var val=keepNumericValue($this.value);//Function from NumberFields.js
+                    $this=$this.parentElement;
+                    if(cantidad)
+                    {
+                        var v=keepNumericValue($this.previousSibling.children[0].value);//Function from NumberFields.js
+                        val=val*((v==null||v=="")?0:v);
+                        $this=$($this.nextSibling.children[0]);
+                    }
+                    else
+                    {
+                        var v=keepNumericValue($this.nextSibling.children[0].value);//Function from NumberFields.js
+                        val=val*((v==null||v=="")?0:v);
+                        $this=$($this.nextSibling.nextSibling.children[0]);
+                    }
+                    $this.val(addSymbolsToNumericValues(val+"",'$','f',2));//Function from NumberFields.js
+                }
+                function precioGloabl()
+                {
+                    var $table=$("#totalTH");
+                    $table.text(addSymbolsToNumericValues($table.text(),'$','f',2));//Function from NumberFields.js
+                }
+                function beforePortalCommit($t)
+                {
+
+                    if($("#mainForm\\:mainFormBtnF").hasClass("btn-fill"))
+                    {
+                        alert('Por favor guarde los cambios antes de continuar.');
+                        return false;
+                    }
+                    else
+                    {   
+                        $t.click();
+                        return true;
+                    }
+                }
+                function onProveedorChange($t,prv,val)
+                {
+                    var $portal=$("#pODC");
+                    if($portal.children().size()>0)
+                        if(confirm("Si cambia el proveedor, los materiales cargados en la orden se eliminarán de ésta."))
+                        {
+                            $t.data("prv",val);
+                            $portal.parent().prev().find("#"+$portal.attr("id")+"F\\:reset").trigger("onclick");
+                            $portal.children().remove();
+                            return true;
+                        }
+                        else
+                        {
+                            var $tmp;
+                            $t.data("prv",prv);
+                            $t=$t.siblings('ul').children();
+                            $portal=$t.size();
+                            for(var i=0;$portal>i;i++)
+                            {
+                                $tmp=$t.eq(i);
+                                if(Number($tmp.attr("rel"))===prv)
+                                    break;
+                            }
+                            $tmp.click();
+                            return false;
+                        }
+                    else
+                    { 
+                        $t.data("prv",val);
+                        return true;
+                    }
+                }
+                function afterTipoChange()
+                {
+                    var $t=$("#mainForm\\:PV");
+                    $t.focus();
+                }
+                function onTipoChange($t)
+                {
+                    var $pv=$t.closest(".row").find("#mainForm\\:PV");
+                    //alert($pv.val());
+                    //alert($pv.children(":selected").size());
+                    if(($pv.children(":selected").size()>0 || $pv.val()!=null)&amp;&amp; Number($pv.val())!==0)
+                    {
+                        if(confirm("Si cambia el tipo de de orden, se borrarán el proveedor y los materiales de ésta."))
+                        {
+                            $t.data("prv",$t.val());
+                            $pv.val(null);
+                            $pv.children().attr("selected",false);
+                            $pv.data("prv",$pv.val());
+                            $pv=$pv.next();
+                            $pv.text("");
+                            $pv.next().children().attr("class","");
+                            $pv=$("#pODC");
+                            $pv.parent().prev().find("#"+$pv.attr("id")+"F\\:reset").trigger("onfocus");
+                            $pv.children().remove();
+                        }
+                        else
+                            $t.val($t.data("prv"));
+                    }
+                    else
+                    {
+                        $pv=$("#pODC");
+                        $pv.parent().prev().find("#"+$pv.attr("id")+"F\\:reset").trigger("onfocus");
+                        $pv.children().remove();
+                    }
+                    $t.data("prv",$t.val());
+                        
+                }
+                function reRunJSCode(d){
+                    if(d.status==='success')
+                    {
+                        runJScode(true);
+                        loadDatePickers();
+                    }
+                }
+            </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+    
+</html>

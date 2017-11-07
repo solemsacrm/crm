@@ -1,0 +1,252 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <h:body>
+        
+        <ui:composition template="./../../WEB-INF/templates/SEG_SideBarTemplate.xhtml">
+            
+            <ui:define name="content">
+                <div class="content" id="content" style="display:none;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">
+                                        Editar Cotización
+                                    </h4>
+                                <!--<p class="category">Listado</p>-->
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm">
+                                        <h:inputHidden id="idHidden" value="#{cotizacionesCRS.rowID}"/>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <h:outputLabel>ID</h:outputLabel>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" value="#{cotizacionesCVS.model.id_SEG_Cotizacion}" rendered="#{cotizacionesCVS.model.id_SEG_Cotizacion!=0}"/>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" rendered="#{cotizacionesCVS.model.id_SEG_Cotizacion==0}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Nombre</h:outputLabel>
+                                                    <h:inputText id="NM" styleClass="form-control" a:placeholder="Nombre" value="#{cotizacionesCVS.model.nombre}">
+                                                        <f:ajax event="change" listener="#{cotizacionesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Cliente</h:outputLabel>  
+                                                    <h:selectOneMenu id="IC" a:size="#{cotizacionesCVS.clientes.display}" value="#{cotizacionesCVS.model.getCliente().id_Clientes}">
+                                                        <f:selectItem itemLabel="#{cotizacionesCVS.model.getCliente().nombre}" itemValue="#{cotizacionesCVS.model.getCliente().id_Clientes}" itemDisabled="#{cotizacionesCVS.clientes.length>0}"/>
+                                                        <f:selectItems value="#{cotizacionesCVS.clientes.list}" var="c" itemValue="#{c.id}" itemLabel="#{c.label}"/>
+                                                        <f:ajax event="focus" render="IC" listener="#{cotizacionesCVS.loadClientesList}" onevent="function(data){onClikVL(data,1,'IC');}" disabled="#{cotizacionesCVS.clientes.length>0}"/>
+                                                        <f:ajax event="focus" render="@none" onevent="function(data){onClikVL(data,0,'SS1');}" disabled="#{cotizacionesCVS.clientes.length lt 1}"/>
+                                                        <f:ajax event="change" listener="#{cotizacionesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Tipo</h:outputLabel>  
+                                                    <h:selectOneMenu id="TI" styleClass="form-control" value="#{cotizacionesCVS.model.tipo}">
+                                                        <f:selectItem itemValue="Evento"/>
+                                                        <f:selectItem itemValue="Planta"/>
+                                                        <f:ajax event="change" listener="#{cotizacionesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Fecha</h:outputLabel>
+                                                    <div class="input-group date">
+                                                        <h:inputText id="FE" a:data-index="#{vs.index}" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{cotizacionesCVS.model.fechaString}">
+                                                            <f:ajax event="change" listener="#{cotizacionesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                        </h:inputText>
+                                                        <div class="input-group-addon">
+                                                            <span class="pe-7s-date" style="font-size:25px;"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Elementos Requeridos</h:outputLabel>
+                                                    <h:inputText id="NE" styleClass="form-control" a:placeholder="No. Elementos" style="text-align:right;" value="#{cotizacionesCVS.model.noElementos}">
+                                                        <f:ajax event="change" listener="#{cotizacionesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Costo</h:outputLabel>
+                                                    <h:inputText id="CO" styleClass="form-control number" a:placeholder="Costo" style="text-align:right;" value="#{cotizacionesCVS.model.costo}" onfocus="onNumberFieldFocus(this.id)" onblur="onNumberFieldBlur(this.id,'$','f',2)">
+                                                        <f:ajax event="change" listener="#{cotizacionesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Tarifa</h:outputLabel>
+                                                    <h:inputText id="PE" styleClass="form-control number" a:placeholder="Tarifa" style="text-align:right;" value="#{cotizacionesCVS.model.precio}" onfocus="onNumberFieldFocus(this.id)" onblur="onNumberFieldBlur(this.id,'$','f',2)">
+                                                        <f:ajax event="change" listener="#{cotizacionesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Renta</h:outputLabel>
+                                                    <h:selectOneMenu id="RE" styleClass="form-control" value="#{cotizacionesCVS.model.renta}">
+                                                        <f:selectItem itemValue="1" itemLabel="Anual"/>
+                                                        <f:selectItem itemValue="2" itemLabel="Mensual"/>
+                                                        <f:selectItem itemValue="3" itemLabel="Quincenal"/>
+                                                        <f:ajax event="change" listener="#{cotizacionesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Descripción</h:outputLabel>
+                                                    <h:inputTextarea id="DE" styleClass="form-control" a:placeholder="Descripción" value="#{cotizacionesCVS.model.descripcion}" rows="4">
+                                                        <f:ajax event="change" listener="#{cotizacionesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputTextarea>
+                                                </div>
+                                            </div>
+                                        </div>                                     
+                                        <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;">
+                                            <f:ajax listener="#{cotizacionesCVS.updateFormServicios}" render="mainForm mainForm2" onevent="reRunJSCode"/>
+                                        </h:commandButton>
+                                        <h:commandButton id="mainFormBtnF" class="#{cotizacionesCVS.cambios?'btn btn-success btn-fill pull-right':'btn btn-success pull-right'}" value="Guardar Cambios" onclick="fromAction(#{cotizacionesCVS.cambios});return false;"/>
+                                        <div class="clearfix"/>
+                                    </h:form>
+                                </div>
+                            </div>
+                        </div>
+                            
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">
+                                        Estatus
+                                    </h4>
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm2">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel value="#{cotizacionesCVS.model.estatus>1?'La cotización fue':'La cotización se encuentra'}:"/>
+                                                    <h:selectOneMenu id="ST" styleClass="form-control" value="#{cotizacionesCVS.model.estatus}">
+                                                        <f:selectItem itemValue="1" itemLabel="Pendiente"/>
+                                                        <f:selectItem itemValue="2" itemLabel="Perdida"/>
+                                                        <f:selectItem itemValue="3" itemLabel="Ganada"/>
+                                                        <f:ajax event="change" listener="#{cotizacionesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h:commandButton value="Ver #{cotizacionesCVS.model.tipo}" class="btn btn-danger btn-fill pull-right" rendered="#{cotizacionesCVS.model.estatus>2}"/>
+                                            </div>
+                                        </div>
+                                    </h:form>
+                                    <div class="clearfix"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h:form id="deleteRecord" style="display:none;"><h:commandLink id="Btn" onclick="return deletionAlert()" action="#{cotizacionesCVS.deleteSEG_Cotizaciones()}">
+                        <i class="pe-7s-trash"/>
+                    </h:commandLink></h:form>
+                </div>
+            </div>
+            <h:outputStylesheet library="css" name="portalsCSS.css"/>
+            <h:outputStylesheet library="css" name="valuelists.css"/>
+            <h:outputStylesheet library="css" name="bootstrap-datepicker3.css"/>
+            <h:outputScript library="js" name="NumberFields.js"/>
+            <h:outputScript library="js" name="valuelistcontrol.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.min.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.es.js"/>
+            <h:outputScript library="js" name="portalActions.js"/>
+            <script type="text/javascript">
+                $(function(){
+                    runJScode(false,true,true);
+                    loadDatePickers();
+                    $("#content").css("display","block");
+                    $('a:not(#deleteRecordBtn,#deleteRecord\\:Btn)').click(function(e){
+                        if($('#mainForm\\:mainFormBtnF.btn-fill').size()>0 || $(".modPR,.newPR").size()>0)
+                            return confirm("No ha guardado los cambios realizados ¿Desea salir sin guardar?");
+                        else return true;
+                    });
+                });
+                function reRunJScode()
+                {
+                    runJScode(true,true,true);
+                    loadDatePickers();
+                }
+                function loadDatePickers(){
+                    $('.date').each(function(){
+                        var $dp=$(this);
+                        var container=$dp.length>0 ? $dp.closest(".card") : "body";
+                        $dp.datepicker({
+                            language: 'es',
+                            format: 'dd/mm/yyyy',
+                            container: container,
+                            showOnFocus: true,
+                            todayHighlight: true,
+                            autoclose: true
+                        });
+                    });
+                }
+                function deletionAlert()
+                {
+                    return confirm('¿Desea eliminar el material actual?');
+                }
+                function fromAction(p)
+                {
+                    if(p)
+                        document.getElementById('mainForm:mainFormBtn').click();
+                }
+                function onClikVL(data,n,current)
+                {
+                    if(data.status==='success')
+                    {
+                        if(n===0)
+                            document.getElementById(current).click();
+                        else
+                            afterAjaxSelect("mainForm\\:"+current,n); 
+                    }
+                }
+                function reRunJSCode(d){
+                    if(d.status==='success')
+                    {
+                        runJScode(true,false,true);
+                        loadDatePickers();
+                    }
+                }
+            </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+    
+</html>

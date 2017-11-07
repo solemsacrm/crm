@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    
+    <f:metadata>
+        <f:viewAction action="#{loginBean.setHideHeaderRecordControls(false)}"/>
+        <f:viewAction action="#{loginBean.setActiveModule(1,10,'landing')}"/>
+        <f:viewParam name="id" value="#{cliBean.id_Clientes}"/>
+    </f:metadata>
+
+    <h:body  rendered="#{loginBean.validar()}">
+
+    <ui:composition template="./../../WEB-INF/templates/JUR_SideBarTemplate.xhtml">
+
+    <ui:define name="content">
+    <div class="content">
+    <div class="container-fluid">
+        
+        <!--/////////////////////////////////BIEVENIDA/////////////////////////////////-->
+        <div class="col-md-5">
+            <div class="card">
+                <div class="header">
+                    <h4 class="title">Bienvenido(a) #{loginBean.usuario.nombre}</h4>
+                    <pre class="category" style="border:0;background-color:inherit;">#{loginBean.usuario.rol}</pre>
+                </div>
+                <div class="content">
+                    <center><img src="#{facesContext.externalContext.requestContextPath}/resources/img/JUR.png"/></center>
+                    <hr/>
+                    <div class="footer">
+                        <div class="stats">
+                            <i class="fa fa-user"></i> Inicio de Sesión: #{loginBean.inicio}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card ">
+                <div class="header">
+                    <h4 class="title">
+                        Avisos y Notificaciones
+                        <icon class="pe-7s-refresh-2 pull-right" style="cursor:pointer;font-size:20px" onclick="$(this.nextSibling.nextSibling.children[2]).click();"/>
+                        <h:form id="formu" style="display:none">
+                            <h:inputText id="auxValues" value="#{landingCVS.auxValues}">
+                                <f:ajax event="mouseup" execute="auxValues" render="auxValues" listener="#{landingCVS.hideRow()}"/>
+                            </h:inputText>
+                            <h:commandButton id="btn">
+                                <f:ajax event="click" render="notiData notiCant" listener="#{landingCVS.fetchJUR_Notificaciones()}" onevent="setCantidad"/>
+                            </h:commandButton>
+                            <h:inputHidden id="idHidden"/>
+                            <h:commandButton id="btnT" action="#{landingCVS.goToTarea()}"/>
+                        </h:form>
+                    </h4>
+                    <p id="notiCant" class="category" style="text-align:right">Visibles: Ocultos: </p>
+                </div>
+                <div class="content">
+                    <div class="table-full-width" style="max-height:400px;overflow:auto;">
+                        <h:panelGroup id="notiData">
+                        <table class="table notificaciones" style="overflow-x:hidden;width:100%" data-cant="#{landingCVS.JUR_NotificacionesLength}">
+                            <tbody>
+                                <ui:repeat var="n" value="#{landingCVS.JUR_Notificaciones}">
+                                <tr data-id="#{n.id_JUR_Notificacion}" style="overflow:hidden;width:100%;#{n.oculto?'display:none':''}">
+                                    <td style="width:5%">
+                                        <h:panelGroup rendered="#{n.JUR_Tarea!=null}">
+                                            <button data-id="#{n.JUR_Tarea.id_JUR_Tarea}" type="button" rel="tooltip" onclick="goToTarea();" class="btn btn-simple btn-xs">
+                                                <i class="fa fa-angle-right" style='font-size:20px;color:graytext'></i>
+                                            </button>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{n.JUR_Tarea==null}">
+                                            <button type="button" rel="tooltip" title="Ir a tarea" class="btn btn-simple btn-xs" style="cursor:default;">
+                                                <i class="fa fa-warning" style='font-size:20px;color:graytext'></i>
+                                            </button>
+                                        </h:panelGroup>
+                                    </td>
+                                    <td style="width:90%;max-width:0;overflow:hidden;#{landingCVS.getPrioridadByReferenc(n)?'color:red':''}">
+                                        <p style="padding:0;margin:0;font-size:13px">#{landingCVS.getFechaEntregaTarea(n)}</p>
+                                        <text style="font-weight:bold">#{n.asunto}</text>
+                                        <br/>
+                                        #{n.descripcion}
+                                        <h:panelGroup rendered="#{landingCVS.checkIfHasAlcance(n)}">
+                                            <br/>
+                                            Notas: #{landingCVS.JUR_Alcance.notas}
+                                        </h:panelGroup>
+                                    </td>
+                                    <td class="td-actions text-right" style="width:5%">
+                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-simple btn-xs" onclick="hideNoti(this)">
+                                            <i class="fa fa-times" style='font-size:20px;color:graytext'></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </ui:repeat>
+                            </tbody>
+                        </table>
+                        </h:panelGroup>
+                    </div>
+
+                    <div class="footer">
+                        <hr/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    </div>
+        <h:outputScript>
+            var $title;
+            $(document).ready(function()
+            {
+                if(#{loginBean.checkSession()})
+                {
+                    $title=$("h4.title").eq(1);
+                    $title.find("icon").click();
+                }
+            });
+            function setCantidad(data)
+            {
+                if(data.status==='success')
+                {
+                    var $h=$title.next(),$n=$(".notificaciones"),s=$n.children().children(":visible").size();
+                    $n=$n.data("cant");
+                    $h.text("Visibles: "+s+" Ocultos: "+(Number($n)-s));
+                }
+            }
+            function hideNoti($t)
+            {
+                if(confirm('¿Desea dejar de ver esta notificación?'))
+                {
+                    var $tr=$($t).closest('tr'),$i=$title.find('input[type=text]').eq(0);
+                    $i.val($tr.data('id'));
+                    $tr.css("display","none");
+                    $i.trigger('onmouseup');
+                    //$tr=$tr.siblings().filter(function(){return !$(this).is(":visible");});
+                    $i=$title.next();
+                    $tr=$i.text().split(" ");
+                    $tr="Visibles: "+(Number($tr[1])-1)+" Ocultos: "+(Number($tr[3])+1);
+                    $i.text($tr)
+                }
+            }
+            function goToTarea()
+            {
+                var $target=$(event.target).closest('button'),
+                id=$target.data('id'),
+                $target=$target.closest('tr').parent().parent().closest('.content').prev().find('form').children('input[type=submit]').eq(1);
+                $target.prev().val(id);
+                $target.click();
+            }
+        </h:outputScript>
+    </ui:define>
+
+    </ui:composition>
+
+    </h:body>
+</html>

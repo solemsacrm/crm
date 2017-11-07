@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+    
+    <f:metadata>
+        <f:viewAction action="#{loginBean.setHideHeaderRecordControls(true)}"/>
+        <f:viewAction action="#{loginBean.setActiveModule(0,10,'configuracion')}"/>
+    </f:metadata>
+
+    <h:body>
+
+        <ui:composition template="#{configCVS.path}">
+
+            <ui:define name="content">
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">
+                                        Configuración
+                                    </h4>
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm">
+                                        <div class="row" style="display:#{configCVS.success gt 2?'':'none;'}">
+                                            <div class="col-md-12">
+                                                <div class="alert alert-danger">
+                                                    <span><b> Error - </b>##{configCVS.success gt 3?'Por favor llene los campos necesarios para crear una nueva contraseña.':'Verifique que la contraseña actual sea correcta y que las nuevas sean iguales entre sí.'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="display:#{configCVS.success==2?'':'none;'}">
+                                            <div class="col-md-12">
+                                                <div class="alert alert-success">
+                                                    <span><b> Éxito - </b>Su contraseña ha sido cambiada correctamente.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Usuario</h:outputLabel>
+                                                    <h:inputText styleClass="form-control" readonly="true" a:placeholder="Usuario" value="#{loginBean.usuario.username}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Contraseña Actual</h:outputLabel>
+                                                    <h:inputSecret styleClass="form-control" readonly="#{configCVS.cambios?'false':'true'}" a:placeholder="Contraseña" value="#{configCVS.co1}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="display:#{configCVS.cambios?'':'none'}">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Nueva Contraseña</h:outputLabel>
+                                                    <h:inputSecret styleClass="form-control" rendered="#{configCVS.cambios}" value="#{configCVS.co2}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Repita Nueva Contraseña</h:outputLabel>
+                                                    <h:inputSecret styleClass="form-control" rendered="#{configCVS.cambios}" value="#{configCVS.co3}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;">
+                                            <f:ajax listener="#{configCVS.updateFormServicios}" render="mainForm" execute="@form"/>
+                                        </h:commandButton>
+                                        <h:commandButton id="mainFormBtnC" styleClass="btn btn-success btn-fill pull-right" value="Cambiar Contraseña" rendered="#{not configCVS.cambios}">
+                                            <f:ajax listener="#{configCVS.cambiarContrasenia}" render="mainForm"/>
+                                        </h:commandButton>
+                                        <h:commandButton id="mainFormBtnF" rendered="#{configCVS.cambios}" class="btn btn-success btn-fill pull-right" value="Guardar Cambios" onclick="fromAction(#{configCVS.cambios});return false;"/>
+                                        <div class="clearfix"/>
+                                    </h:form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                        <div class="card card-user">
+                            <div class="image"/>
+                            <div class="content">
+                                <div class="author">
+                                        <img class="avatar border-gray" src="#{facesContext.externalContext.requestContextPath}/resources/img/#{configCVS.areaAbbreviation eq 'VEN'?'SOLEMSA-logo-ok':configCVS.areaAbbreviation}.png"/>
+                                        <h4 class="title">#{loginBean.usuario.nombre}<br/>
+                                        <small>#{configCVS.areaText}</small>
+                                      </h4>
+                                </div>
+                                <pre class="description" style="white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-o-pre-wrap;word-wrap:break-word;overflow:hidden;border:0;background-color:inherit;">#{loginBean.usuario.rol}</pre>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <h:outputStylesheet library="css" name="bootstrap-datepicker3.css"/>
+            <h:outputScript library="js" name="checkListsControls.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.min.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.es.js"/>
+            <script>
+                function fromAction(p)
+                {
+                    if(p)
+                        document.getElementById('mainForm:mainFormBtn').click();
+                }
+            </script>
+            </ui:define>
+            
+        </ui:composition>
+
+    </h:body>
+</html>

@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:gs="http://gruposolemsa.com/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:head>
+        <gs:ldbheader />
+    </h:head>
+
+    <h:body>
+        <f:metadata>
+            <f:viewAction action="#{loginBean.logout()}"/>
+        </f:metadata>
+        <div class="wrapper">
+            
+            <!--<div class="content">-->
+                <!--<div class="container-fluid">-->
+                <!--<div class="row">-->
+                <div class="col-md-4 col-md-offset-4" style="position: relative; padding-top: 3.5%; padding-bottom: 0%;">
+                            <div class="card card-user">
+                                <div class="image">
+                                    <!--<img src="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400" alt="..."/>-->
+                                </div>
+                                <div class="content">
+                                    <div class="author">
+                                            <img class="avatar border-gray" src="#{facesContext.externalContext.requestContextPath}/resources/img/SOLEMSA-logo-ok.png" alt="http://gruposolemsa.com" />
+                                        <h4 class="title">Log In<br />
+                                            <small>Introduzca sus datos por favor.</small>
+                                        </h4>
+                                        <br/>
+                                    </div>
+                                    <div id="alerta"><!--Sección controlada por javascript--></div>
+                                    <h:form id="loginForm">
+                                    <div class="form-group">
+                                        <label>Usuario</label>
+                                        <h:inputText id="inputNombre" styleClass="form-control" value="#{loginBean.nombre}" autocomplete="off"/>
+                                        <br/>
+                                        <label>Contraseña</label>
+                                        <h:inputSecret id="inputContrasenia" class="form-control" value="#{loginBean.contrasenia}"/>
+                                        <br/>
+                                        <h:inputText id="inputUsuario" styleClass="form-control" value="#{loginBean.rol}" style="display:none" />
+                                        <br/>
+                                        <h:commandButton id="login-btn" onclick="return validar()" value="Iniciar Sesión" styleClass="btn btn-danger btn-fill pull-center"  action="#{loginBean.navegar('session/')}" />
+                                    </div>
+                                    </h:form>
+                                </div>
+                                <hr/>
+                                <div class="text-center">
+                                    <button href="https://www.facebook.com/GrupoSolemsa-1042402755844985/" class="btn btn-simple"><i class="fa fa-facebook-square"></i></button>
+                                    <button href="https://plus.google.com/u/0/113472421311051473228" class="btn btn-simple"><i class="fa fa-google-plus-square"></i></button>
+                                    <button href="https://twitter.com/SolemsaContacto" class="btn btn-simple"><i class="fa fa-twitter"></i></button>
+                                    <button href="https://www.instagram.com/gruposolemsa/" class="btn btn-simple"><i class="fa fa-instagram"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </h:body>
+    <script type="text/javascript">
+        function validar() {
+            var nom=document.getElementById('loginForm:inputNombre').value;
+            var con=document.getElementById('loginForm:inputContrasenia').value;
+            var ale=document.getElementById('alerta');
+            ale.innerHTML='';
+            if(nom==="" || nom===null || con==="" || con===null)
+            {
+                ale.innerHTML='<br/><div class="alert alert-danger">'+
+                    '<b> Error: </b> <h:outputText  value="Los datos de entrada no son válidos."/>'+
+                '</div>';
+                return false;  
+            }
+            else
+                return true;
+        }
+    </script>
+    
+</html>

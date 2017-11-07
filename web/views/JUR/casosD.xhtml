@@ -1,0 +1,408 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <f:metadata>
+        <f:viewAction action="#{loginBean.setHideHeaderRecordControls(false)}"/>
+    </f:metadata>
+    
+    <h:body>
+        
+        <ui:composition template="./../../WEB-INF/templates/JUR_SideBarTemplate.xhtml">
+            
+            <ui:define name="content">
+                <div class="content" id="content" style="display:none;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">
+                                        Editar Caso
+                                    </h4>
+                                <!--<p class="category">Listado</p>-->
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm" rendered="#{loginBean.getUsuario().gerente}">
+                                        <h:inputHidden id="idHidden" value="#{casosCRS.rowID}"/>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <h:outputLabel>ID</h:outputLabel>
+                                                    <h:inputText id="modelID" styleClass="form-control" a:placeholder="ID" disabled="true" value="#{casosCVS.model.id_JUR_Caso}" rendered="#{casosCVS.model.id_JUR_Caso!=0}"/>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" rendered="#{casosCVS.model.id_JUR_Caso==0}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Nombre</h:outputLabel>
+                                                    <h:inputText id="NM" styleClass="form-control" a:placeholder="Nombre" value="#{casosCVS.model.nombre}">
+                                                        <f:ajax event="change" listener="#{casosCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Cliente</h:outputLabel>  
+                                                    <h:selectOneMenu id="IC" a:size="#{casosCVS.clientes.display}" value="#{casosCVS.model.getCliente().id_Clientes}">
+                                                        <f:selectItem itemLabel="#{casosCVS.model.getCliente().nombre}" itemValue="#{casosCVS.model.getCliente().id_Clientes}" itemDisabled="#{casosCVS.clientes.length>0}"/>
+                                                        <f:selectItems value="#{casosCVS.clientes.list}" var="c" itemValue="#{c.id}" itemLabel="#{c.label}"/>
+                                                        <f:ajax event="focus" render="IC" listener="#{casosCVS.loadClientesList}" onevent="function(data){onClikVL(data,1,'IC');}" disabled="#{casosCVS.clientes.length>0}"/>
+                                                        <f:ajax event="focus" render="@none" onevent="function(data){onClikVL(data,0,'SS1');}" disabled="#{casosCVS.clientes.length lt 1}"/>
+                                                        <f:ajax event="change" listener="#{casosCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Juzgado</h:outputLabel>  
+                                                    <h:selectOneMenu id="JU" styleClass="form-control" value="#{casosCVS.model.juzgado}">
+                                                        <f:selectItem itemValue="Civil"/>
+                                                        <f:selectItem itemValue="Laboral"/>
+                                                        <f:selectItem itemValue="Menor Civil"/>
+                                                        <f:selectItem itemValue="Oralidad Familiar"/>
+                                                        <f:selectItem itemValue="Oralidad Mercantil"/>
+                                                        <f:selectItem itemValue="Penal"/>
+                                                        <f:ajax event="change" listener="#{casosCVS.checkForChanges}" render="PC mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Asunto</h:outputLabel>
+                                                    <h:inputText id="TI" styleClass="form-control" a:placeholder="Tipo de caso" value="#{casosCVS.model.tipo}">
+                                                        <f:ajax event="change" listener="#{casosCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Papel del Cliente</h:outputLabel>
+                                                    <h:selectOneMenu id="PC" styleClass="form-control" value="#{casosCVS.model.papelCliente}">
+                                                        <f:selectItem itemValue="#{casosCVS.model.juzgado eq 'Penal'?'Denunciante':'Demandante'}"/>
+                                                        <f:selectItem itemValue="Demandado" itemDisabled="#{casosCVS.model.juzgado eq 'Penal'}"/>
+                                                        <f:ajax event="change" listener="#{casosCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>No. Expediente</h:outputLabel>
+                                                    <h:inputText id="FE" a:data-index="#{vs.index}" styleClass="form-control" a:placeholder="Número de Expediente" value="#{casosCVS.model.noExpediente}">
+                                                        <f:ajax event="change" listener="#{casosCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Costo</h:outputLabel>
+                                                    <h:inputText id="CO" styleClass="form-control number" a:placeholder="Costo" style="text-align:right;" value="#{casosCVS.model.costo}" onfocus="onNumberFieldFocus(this.id)" onblur="onNumberFieldBlur(this.id,'$','f',2)">
+                                                        <f:ajax event="change" listener="#{casosCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Descripción</h:outputLabel>
+                                                    <h:inputTextarea id="DE" styleClass="form-control" a:placeholder="Descripción" value="#{casosCVS.model.descripcion}" rows="4">
+                                                        <f:ajax event="change" listener="#{casosCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputTextarea>
+                                                </div>
+                                            </div>
+                                        </div>                                     
+                                        <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;">
+                                            <f:ajax listener="#{casosCVS.updateFormServicios}" render="mainForm formu mainForm2" onevent="reRunJSCode"/>
+                                        </h:commandButton>
+                                        <h:commandButton id="mainFormBtnF" class="#{casosCVS.cambios?'btn btn-success btn-fill pull-right':'btn btn-success pull-right'}" value="Guardar Cambios" onclick="fromAction(#{casosCVS.cambios});return false;"/>
+                                        <div class="clearfix"/>
+                                    </h:form>
+                                    
+                                    
+                                    
+                                    
+                                    <h:form id="mainFormRH" rendered="#{!loginBean.getUsuario().gerente}">
+                                        <h:inputHidden id="idHidden" value="#{casosCRS.rowID}"/>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <h:outputLabel>ID</h:outputLabel>
+                                                    <h:inputText id="modelID" styleClass="form-control" a:placeholder="ID" disabled="true" value="#{casosCVS.model.id_JUR_Caso}" rendered="#{casosCVS.model.id_JUR_Caso!=0}"/>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" rendered="#{casosCVS.model.id_JUR_Caso==0}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Nombre</h:outputLabel>
+                                                    <h:inputText id="NM" styleClass="form-control" a:placeholder="Nombre" value="#{casosCVS.model.nombre}" readonly="true"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Cliente</h:outputLabel>  
+                                                    <h:inputText id="IC" styleClass="form-control" value="#{casosCVS.model.getCliente().nombre}" readonly="true"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Juzgado</h:outputLabel>  
+                                                    <h:inputText id="JU" styleClass="form-control" value="#{casosCVS.model.juzgado}" readonly="true"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Asunto</h:outputLabel>
+                                                    <h:inputText id="TI" styleClass="form-control" a:placeholder="Tipo de caso" style="text-align:right;" value="#{casosCVS.model.tipo}" readonly="true"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Papel del Cliente</h:outputLabel>
+                                                    <h:inputText id="PC" styleClass="form-control" value="#{casosCVS.model.juzgado}" readonly="true"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>No. Expediente</h:outputLabel>
+                                                    <h:inputText id="FE" a:data-index="#{vs.index}" styleClass="form-control" a:placeholder="Número de Expediente" value="#{casosCVS.model.noExpediente}" readonly="true"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Costo</h:outputLabel>
+                                                    <h:inputText id="CO" styleClass="form-control number" a:placeholder="Costo" style="text-align:right;" value="#{casosCVS.model.costo}" onfocus="onNumberFieldFocus(this.id)" onblur="onNumberFieldBlur(this.id,'$','f',2)" readonly="true"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Descripción</h:outputLabel>
+                                                    <h:inputTextarea id="DE" styleClass="form-control" a:placeholder="Descripción" value="#{casosCVS.model.descripcion}" rows="4" readonly="true"/>
+                                                </div>
+                                            </div>
+                                        </div>        
+                                        <div class="clearfix"/>
+                                    </h:form>
+                                </div>
+                            </div>
+                        </div>
+                            
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">
+                                        Estatus
+                                    </h4>
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm2">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel value="El caso se encuentra:"/>
+                                                    <h:selectOneMenu id="EA" styleClass="form-control" value="#{casosCVS.model.etapaActual}" rendered="#{loginBean.getUsuario().gerente}">
+                                                        <f:selectItem itemValue="0" itemLabel="Pendiente"/>
+                                                        <f:selectItem itemValue="1" itemLabel="En Proceso"/>
+                                                        <f:selectItem itemValue="2" itemLabel="Perdido"/>
+                                                        <f:selectItem itemValue="3" itemLabel="Ganado"/>
+                                                        <f:ajax event="change" listener="#{casosCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                    <h:inputText id="EARH" styleClass="form-control" value="#{casosCVS.estatusName}" rendered="#{!loginBean.getUsuario().gerente}" readonly="true"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </h:form>
+                                    <h:form id="formu">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h:commandButton value="Ver Expediente" class="btn btn-danger pull-right" onclick="alert('Registre primero el nuevo caso, por favor.');return false;" rendered="#{casosCVS.model.id_JUR_Caso lt 1}"/>
+                                                <h:commandButton value="Ver Expediente" class="btn btn-danger btn-fill pull-right" action="#{casosCVS.goToDetail()}" onclick="return goToExpediente();" rendered="#{casosCVS.model.id_JUR_Caso gt 0}"/>
+                                                <h:inputHidden id="idHidden"/>
+                                            </div>
+                                        </div>
+                                    </h:form>
+                                    <div class="clearfix"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="header-with-icon">
+                                    <div class="col-md-11">
+                                        <h4 class="title">Tareas asignadas</h4>
+                                    </div>
+                                    <h:panelGroup class="col-md-1" style="text-align:right" rendered="#{loginBean.getUsuario().gerente}">
+                                        <i class="pe-7s-plus" data-msg="un encargado para la tarea" onclick="if(1>$('#mainForm\\:modelID').size())alert('Por favor registre el caso antes de asignar tareas.');else addPortalRow('pTarea',6,new Array('calendar','1,2','select','3,4','textarea','6_3'));" onfocus="addPortalRow('pTarea',6,new Array('calendar','1,2','select','3,4','textarea','6_3'));"/>
+                                    </h:panelGroup>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="content table-responsive table-full-width">
+                                        <h:form id="pTareaF" style="position:absolute;z-index:-999;" rendered="#{loginBean.getUsuario().gerente}">
+                                            <h:inputHidden id="commit" value="#{casosCVS.portalValues}"/>
+                                            <h:selectOneMenu id="prvL1" styleClass="form-control" a:size="#{casosCVS.model.JUR_EtapasLength>10?10:casosCVS.model.JUR_EtapasLength}" style="width:0;opacity:0;" tabindex="-1">
+                                                <f:selectItems value="#{casosCVS.model.JUR_Etapas}" var="c1" itemValue="#{c1.id_JUR_Etapa}" itemLabel="#{c1.nombre}"/>
+                                            </h:selectOneMenu>
+                                            <h:selectOneMenu id="prvL2" styleClass="form-control" a:size="#{casosCVS.RHs.length>10?10:casosCVS.RHs.length}" style="width:0;opacity:0;" tabindex="-2">
+                                                <f:selectItems value="#{casosCVS.RHs.list}" var="c2" itemValue="#{c2.id}" itemLabel="#{c2.label}"/>
+                                                <f:ajax event="focus" render="prvL2" listener="#{casosCVS.loadRHsList}" onevent="function(data){loadSourceSelect(data,trNumber,'pTareaF\\:prvL2');}" disabled="#{casosCVS.RHs.length>0}"/>
+                                            </h:selectOneMenu>
+                                            <h:commandButton id="btn" style="display:none;">
+                                                <f:ajax event="click" listener="#{casosCVS.commitPortal}" execute="commit" render="commit" onevent="function(data){if(data.status==='success')replaceRowType(#{false},'@tableRowNumber');}"/>
+                                            </h:commandButton>
+                                            <h:commandButton id="btnD" style="display:none;">
+                                                <f:ajax event="click" listener="#{casosCVS.deleteFromPortal}" execute="commit" render="commit"/>
+                                            </h:commandButton>
+                                        </h:form>
+                                        <table id="pTareaT" class="table table-hover table-striped portal" data-rows="#{casosCVS.model.JUR_TareasLength}" data-sort="2_A">
+                                            <thead id="pHead">
+                                                <th width="10%" style="padding-left:1px;padding-right:1px;text-align:center">Asignación</th>
+                                                <th width="10%" style="padding-left:1px;padding-right:1px;text-align:center">Entrega</th>
+                                                <th width="12.5%" style="padding-left:1px;padding-right:1px;">Etapa</th>
+                                                <th width="12.5%" style="padding-left:1px;padding-right:1px;">Encargado</th>
+                                                <th width="20%" style="padding-left:1px;padding-right:1px;">Asunto</th>
+                                                <th width="25%" style="padding-left:1px;padding-right:1px;">Descripción</th>
+                                                <th width="10%" style="padding-left:1px;padding-right:1px;"></th>
+                                            </thead>
+                                            <tbody id="pTarea" data-rows="#{casosCVS.model.JUR_TareasLength}">
+                                                <ui:repeat var="p" value="#{casosCVS.model.JUR_Tareas}" varStatus="vs">
+                                                    <tr data-row="#{vs.index+1}" style="width:100%">
+                                                        <td data-id="#{p.id_JUR_Tarea}" class="calendar" style="padding-left:1px;padding-right:1px;width:10%;text-align:center" data-inFieldStyle="text-align:center;">#{p.fechaAsignacionString}</td>
+                                                        <td class="calendar" style="padding-left:1px;padding-right:1px;width:10%;text-align:center" data-inFieldStyle="text-align:center;">#{p.fechaEntregaString}</td>
+                                                        <td style="padding-left:1px;padding-right:1px;width:12.5%;" data-value="#{p.JUR_Etapa.id_JUR_Etapa}">#{p.JUR_Etapa.nombre}</td>
+                                                        <td style="padding-left:1px;padding-right:1px;width:12.5%;" data-value="#{p.JUR_RecursoHumano.id_JUR_RecursoHumano}">#{p.JUR_RecursoHumano.nombre+=' '+=p.JUR_RecursoHumano.apellidos}</td>
+                                                        <td style="padding-left:1px;padding-right:1px;width:20%;">#{p.asunto}</td>
+                                                        <td style="padding-left:1px;padding-right:1px;width:25%;">#{p.descripcion}</td>
+                                                        <td style="padding-left:1px;padding-right:1px;width:10%;padding:0"><center style="padding:0;#{loginBean.getUsuario().gerente?'':'visibility:hidden'}"><i class='inPortal pe-7s-note' onclick="#{loginBean.getUsuario().gerente?'editRow();':''}"/><i class='inPortal pe-7s-trash' onclick="#{loginBean.getUsuario().gerente?'deleteFromPortal();':''}"/></center></td>
+                                                    </tr>
+                                                </ui:repeat>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="clearfix"/>
+                            </div>
+                        </div>
+                    </div>
+                    <h:form id="deleteRecord" style="display:none;"><h:commandLink id="Btn" onclick="return deletionAlert()" action="#{casosCVS.deleteJUR_Casos()}">
+                        <i class="pe-7s-trash"/>
+                    </h:commandLink></h:form>
+                </div>
+            </div>
+            <h:outputStylesheet library="css" name="portalsCSS.css"/>
+            <h:outputStylesheet library="css" name="valuelists.css"/>
+            <h:outputStylesheet library="css" name="bootstrap-datepicker3.css"/>
+            <h:outputScript library="js" name="NumberFields.js"/>
+            <h:outputScript library="js" name="valuelistcontrol.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.min.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.es.js"/>
+            <h:outputScript library="js" name="portalActions.js"/>
+            <script type="text/javascript">
+                $(function(){
+                    runJScode(false,true,true);
+                    loadDatePickers();
+                    $("#content").css("display","block");
+                    $('a:not(#deleteRecordBtn,#deleteRecord\\:Btn,.dropdown-toggle)').click(function(e){
+                        if($('#mainForm\\:mainFormBtnF.btn-fill').size()>0 || $(".modPR,.newPR").size()>0)
+                            return confirm("No ha guardado los cambios realizados ¿Desea salir sin guardar?");
+                        else return true;
+                    });
+                    $("table").prev().children("select").click(function(event)
+                    {
+                        event.preventDefault();
+                        this.blur();
+                        event.stopPropagation();
+                    });
+                });
+                function reRunJScode()
+                {
+                    runJScode(true,true,true);
+                    loadDatePickers();
+                }
+                function loadDatePickers(){
+                    $('.date').each(function(){
+                        var $dp=$(this);
+                        var container=$dp.length>0 ? $dp.closest(".card") : "body";
+                        $dp.datepicker({
+                            language: 'es',
+                            format: 'dd/mm/yyyy',
+                            container: container,
+                            showOnFocus: true,
+                            todayHighlight: true,
+                            autoclose: true
+                        });
+                    });
+                }
+                function deletionAlert()
+                {
+                    return confirm('¿Desea eliminar el material actual?');
+                }
+                function fromAction(p)
+                {
+                    if(p)
+                        document.getElementById('mainForm:mainFormBtn').click();
+                }
+                function onClikVL(data,n,current)
+                {
+                    if(data.status==='success')
+                    {
+                        if(n===0)
+                            document.getElementById(current).click();
+                        else
+                            afterAjaxSelect("mainForm\\:"+current,n); 
+                    }
+                }
+                function reRunJSCode(d){
+                    if(d.status==='success')
+                    {
+                        runJScode(true,false,true);
+                        loadDatePickers();
+                    }
+                }
+                function goToExpediente()
+                {
+                    if($("#mainForm\\:mainFormBtnF").hasClass("btn-fill"))
+                    {
+                        alert('Por favor guarde los cambios.');
+                        return false;
+                    }
+                    else
+                    {
+                        var $target=$(event.target).next();
+                        $target.val($("#mainForm#{loginBean.getUsuario().gerente?'':'RH'}\\:modelID").val());
+                        return true;
+                    }
+                }
+            </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+    
+</html>

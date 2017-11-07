@@ -1,0 +1,523 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+    
+    
+
+    <h:body>
+
+        <ui:composition template="./../../WEB-INF/templates/REX_SideBarTemplate.xhtml">
+
+            <ui:define name="content">
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">
+                                        Editar Cliente
+                                    </h4>
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm">
+                                        <h:inputHidden id="idHidden" value="#{clientesCRS.rowID}"/>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <h:outputLabel>ID</h:outputLabel>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" value="#{clientesCVS.model.id_Clientes}" rendered="#{clientesCVS.model.id_Clientes!=0}"/>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" rendered="#{clientesCVS.model.id_Clientes==0}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Nombre</h:outputLabel>
+                                                    <h:inputText id="NM" styleClass="form-control" a:placeholder="Nombre" value="#{clientesCVS.model.nombre}">
+                                                        <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Razón Social</h:outputLabel>
+                                                    <h:inputText id="RS" styleClass="form-control" a:placeholder="Razón Social" value="#{clientesCVS.model.razonSocial}">
+                                                        <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>RFC</h:outputLabel>
+                                                    <h:inputText id="RF" styleClass="form-control" a:placeholder="RFC" value="#{clientesCVS.model.RFC}">
+                                                        <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Tipo de Persona</h:outputLabel>
+                                                    <h:inputText id="TP" styleClass="form-control" a:placeholder="Tipo de Persona" value="#{clientesCVS.model.tipoPersona}">
+                                                        <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Ciudad</h:outputLabel>
+                                                    <h:inputText id="CI" styleClass="form-control" a:placeholder="Ciudad" value="#{clientesCVS.model.ciudad}">
+                                                        <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Estado</h:outputLabel>
+                                                    <h:inputText id="ES" styleClass="form-control" a:placeholder="Estado" value="#{clientesCVS.model.estado}">
+                                                        <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <h:outputLabel>País</h:outputLabel>
+                                                    <h:inputText id="PA" styleClass="form-control" a:placeholder="País" value="#{clientesCVS.model.pais}">
+                                                        <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Código postal</h:outputLabel>
+                                                    <h:inputText id="CP" styleClass="form-control" a:placeholder="Código Postal" value="#{clientesCVS.model.delegacion}">
+                                                        <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Dirección</h:outputLabel>
+                                                    <h:inputText id="DI" styleClass="form-control" a:placeholder="Dirección" value="#{clientesCVS.model.direccion}">
+                                                        <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Observaciones</h:outputLabel>
+                                                    <h:inputTextarea id="NT" rows="5" styleClass="form-control" a:placeholder="Observaciones" value="#{clientesCVS.model.descripcion}">
+                                                        <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputTextarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="display:none;">
+                                            <h:inputText id="SV" styleClass="checkTarget" a:placeholder="Observaciones" value="#{clientesCVS.servicios}">
+                                                <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                            </h:inputText>
+                                        </div>
+                                        <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;">
+                                            <f:ajax listener="#{clientesCVS.updateFormServicios}" render="logoForm logCard mainForm pTelsF pMailF" execute="@form" onevent="function(data){if(data.status==='success')$('iframe').remove();}"/>
+                                        </h:commandButton>
+                                        <h:commandButton id="mainFormBtnF" class="#{clientesCVS.cambios?'btn btn-success btn-fill pull-right':'btn btn-success pull-right'}" value="Guardar Cambios" onclick="fromAction(#{clientesCVS.cambios});return false;"/>
+                                        <h:commandButton id="logoChange" style="display:none;">
+                                            <f:ajax listener="#{clientesCVS.setLogoChange}" execute="change" render="mainForm:mainFormBtnF"/>
+                                        </h:commandButton>
+                                        <div class="clearfix"/>
+                                    </h:form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card card-user">
+                                <div class="image" style="height:75px;">
+                                    <h:form id="deleteRecord" style="display:none;"><h:commandLink id="Btn" onclick="return deletionAlert()" action="#{clientesCVS.deleteCliente()}">
+                                        <i class="pe-7s-trash"/>
+                                    </h:commandLink></h:form>
+                                </div>
+                                <div class="content">
+                                    <div class="author">
+                                        <h:form id="logoForm" enctype="multipart/form-data">
+                                            <img class="avatar border-gray" src="#{clientesCVS.logoPath}" onclick="this.nextSibling.click();"/>
+                                            <h:inputFile id="file" value="#{clientesCVS.logo}" style="display:none;" onchange="$('#mainForm\\:logoChange').click();"/>
+                                            <h:commandButton id="upload" value="Upload Logo" style="display:none;">
+                                                <f:ajax listener="#{clientesCVS.modificarLogo}" execute="file" render="@none" onevent="function(data){if(data.status==='success')$('#mainForm\\:mainFormBtn').click();}"/>
+                                            </h:commandButton>
+                                        </h:form>
+                                             <!--<h:inputFile styleClass="avatar border-gray"/>-->
+                                          <h4 class="title">Servicios Contratados<br />
+                                             <small></small>
+                                          </h4>
+                                    </div>
+                                    <p class="description text-center">
+                                        <center>
+                                            <h:form id="serviciosForm">
+                                                <h:selectManyCheckbox id="superID" class="checkSource" layout="pageDirection" value="#{clientesCVS.servicios2}">
+                                                <f:selectItem id="c1" itemValue="1" itemLabel="Administración y Outsourcing" itemDisabled="#{loginBean.usuario.area!=1 or clientesCVS.model.id_Clientes lt 1}"/>
+                                                <f:selectItem id="c2" itemValue="4" itemLabel="Seguridad y Prevención" itemDisabled="#{loginBean.usuario.area!=4 or clientesCVS.model.id_Clientes lt 1}"/>
+                                                <f:selectItem id="c3" itemValue="3" itemLabel="Contabilidad" itemDisabled="#{loginBean.usuario.area!=3 or clientesCVS.model.id_Clientes lt 1}"/>
+                                                <f:selectItem id="c4" itemValue="2" itemLabel="Legal y Jurídica" itemDisabled="#{loginBean.usuario.area!=2 or clientesCVS.model.id_Clientes lt 1}"/>
+                                                <f:selectItem id="c5" itemValue="5" itemLabel="REX Irrigación" itemDisabled="#{loginBean.usuario.area!=5 or clientesCVS.model.id_Clientes lt 1}"/>
+                                            </h:selectManyCheckbox>
+                                        </h:form>
+                                        </center>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="content">
+                                    <h:form id="mainForm2">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:selectOneMenu id="STslt" styleClass="form-control" value="#{clientesCVS.model.estatus}" onchange="validateChange(this,#{clientesCVS.model.estatus});">
+                                                        <f:selectItem itemValue="1" itemLabel="Prospecto"/>
+                                                        <f:selectItem itemValue="2" itemLabel="Cliente"/>
+                                                        <f:selectItem itemValue="3" itemLabel="Ex-Cliente"/>
+                                                        <f:ajax event="change" execute="@none" render="@this"/>
+                                                    </h:selectOneMenu>
+                                                    <h:commandButton id="ST" style="display:none;">
+                                                        <f:ajax event="click" execute="STslt" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF mainForm2" onevent="onStatusChange"/>
+                                                    </h:commandButton>
+                                                </div>
+                                                <div class="form-group"  style="#{clientesCVS.model.estatus>1?'':'display:none;'}">
+                                                    <h:outputLabel>Fecha en que se volvió cliente</h:outputLabel>
+                                                    <div class="input-group date">
+                                                        <h:inputText id="FC" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{clientesCVS.fechaCliente}">
+                                                            <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                        </h:inputText>
+                                                        <div class="input-group-addon">
+                                                            <span class="pe-7s-date" style="font-size:25px;"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group"  style="#{clientesCVS.model.estatus==3?'':'display:none;'}">
+                                                    <h:outputLabel>Fecha en que dejó de ser cliente</h:outputLabel>
+                                                    <div class="input-group date">
+                                                        <h:inputText id="FM" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{clientesCVS.fechaMigracion}">
+                                                            <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                        </h:inputText>
+                                                        <div class="input-group-addon">
+                                                            <span class="pe-7s-date" style="font-size:25px;"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" style="#{clientesCVS.model.estatus==3?'':'display:none;'}">
+                                                    <h:outputLabel>Razón: </h:outputLabel>
+                                                    <h:inputTextarea id="RM" rows="5" styleClass="form-control" value="#{clientesCVS.model.razonMigracion}">
+                                                        <f:ajax event="change" listener="#{clientesCVS.checkForChangesNombre}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputTextarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            <div class="clearfix"/>
+                                    </h:form>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="content">
+                                <h:form id="logCard">
+                                    <h:outputLabel value="Registrado por: #{clientesCVS.logCardData(clientesCVS.model.zz_UsuarioCreacion)}"/>
+                                    <br/>
+                                    <h:outputLabel id="MUs" value="Última Modificación por: #{clientesCVS.logCardData(clientesCVS.model.zz_UsuarioModificacion)}, #{clientesCVS.model.zz_FechaModificacion}"/>
+                                </h:form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                            
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header-with-icon">
+                                    <div class="col-md-11">
+                                        <h4 class="title">Teléfonos</h4>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <i class="pe-7s-plus" onclick="addPortalRow('pTels',5,new Array('select','1'));"/>
+                                    </div>
+                                </div>
+                                    <div class="col-md-12">
+                                        <div class="content table-responsive table-full-width">
+                                            <h:form id="pTelsF" style="position:absolute;z-index:999;">
+                                                <h:inputHidden id="commit" value="#{clientesCVS.portalValues}"/>
+                                                <h:selectOneMenu id="prvL" styleClass="form-control standard" style="width:0;opacity:0;">
+                                                    <f:selectItem itemValue="Celular"/>
+                                                    <f:selectItem itemValue="Oficina"/>
+                                                    <f:selectItem itemValue="General"/>
+                                                </h:selectOneMenu>
+                                                <h:commandButton id="#{clientesCVS.model.id_Clientes lt 1?'btn':'btn2'}" style="display:none;" rendered="#{clientesCVS.model.id_Clientes gt 0}">
+                                                    <f:ajax event="click" listener="#{clientesCVS.commitPortal(true)}" execute="commit" render="commit" onevent="function(data){if(data.status==='success')replaceRowType(#{false},'@tableRowNumber');}"/>
+                                                </h:commandButton>
+                                                <h:commandButton id="#{clientesCVS.model.id_Clientes gt 0?'btn':'btn2'}" style="display:none;" rendered="#{clientesCVS.model.id_Clientes lt 1}">
+                                                    <f:ajax event="click" execute="@none" render="@none" onevent="function(data){if(data.status==='begin')alert('Por favor registre al cliente antes de guardar el teléfono.');}"/>
+                                                </h:commandButton>
+                                                <h:commandButton id="btnD" style="display:none;">
+                                                    <f:ajax event="click" listener="#{clientesCVS.deleteFromPortal(true)}" execute="commit" render="@none"/>
+                                                </h:commandButton>
+                                            </h:form>
+                                            <table id="pTelsT" class="table table-hover table-striped portal" data-rows="#{clientesCVS.model.telefonos.size()}" data-sort="2_A">
+                                                <thead id="pHead">
+                                                    <th width="15%">Tipo</th>
+                                                    <th width="5%">Lada</th>
+                                                    <th width="20%">Número</th>
+                                                    <th width="5%">Extensión</th>
+                                                    <th width="45%">Notas</th>
+                                                    <th width="10%"></th>
+                                                </thead>
+                                                <tbody id="pTels">
+                                                    <ui:repeat var="p" value="#{clientesCVS.model.telefonos}" varStatus="vs">
+                                                        <tr data-row="#{vs.index+1}">
+                                                            <td data-id="#{p.id_Telefono}">#{p.tipo}</td>
+                                                            <td>#{p.lada}</td>
+                                                            <td>#{p.numero}</td>
+                                                            <td>#{p.extension}</td>
+                                                            <td style="max-width:150px;">#{p.notas}</td>
+                                                            <td style='padding:0'><center style='padding:0'><i class='inPortal pe-7s-note' onclick="editRow();"/><i class='inPortal pe-7s-trash' onclick="deleteFromPortal()"/></center></td>
+                                                        </tr>
+                                                    </ui:repeat>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header-with-icon">
+                                    <div class="col-md-11">
+                                        <h4 class="title">Correos</h4>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <i class="pe-7s-plus" onclick="addPortalRow('pMail',3,new Array('select','1'));"/>
+                                    </div>
+                                </div>
+                                    <div class="col-md-12">
+                                        <div class="content table-responsive table-full-width">
+                                            <h:form id="pMailF" style="position:absolute;z-index:999;">
+                                                <h:inputHidden id="commit" value="#{clientesCVS.portalValues}"/>
+                                                <h:selectOneMenu id="prvL" styleClass="form-control standard" style="width:0;opacity:0;">
+                                                    <f:selectItem itemValue="Personal"/>
+                                                    <f:selectItem itemValue="Trabajo"/>
+                                                </h:selectOneMenu>
+                                                <h:commandButton id="#{clientesCVS.model.id_Clientes lt 1?'btn':'btn2'}" style="display:none;" rendered="#{clientesCVS.model.id_Clientes gt 0}">
+                                                    <f:ajax event="click" listener="#{clientesCVS.commitPortal(false)}" execute="commit" render="commit" onevent="function(data){if(data.status==='success')replaceRowType(#{false},'@tableRowNumber');}"/>
+                                                </h:commandButton>
+                                                <h:commandButton id="#{clientesCVS.model.id_Clientes gt 0?'btn':'btn2'}" style="display:none;" rendered="#{clientesCVS.model.id_Clientes lt 1}">
+                                                    <f:ajax event="click" execute="@none" render="@none" onevent="function(data){if(data.status==='begin')alert('Por favor registre al cliente antes de guardar el correo.');}"/>
+                                                </h:commandButton>
+                                                <h:commandButton id="btnD" style="display:none;">
+                                                    <f:ajax event="click" listener="#{clientesCVS.deleteFromPortal(false)}" execute="commit" render="@none"/>
+                                                </h:commandButton>
+                                            </h:form>
+                                            <table id="pMailT" class="table table-hover table-striped portal" data-rows="#{clientesCVS.model.correos.size()}" data-sort="2_A">
+                                                <thead id="pHead">
+                                                    <th width="15%">Tipo</th>
+                                                    <th width="35%">Correo</th>
+                                                    <th width="40%">Notas</th>
+                                                    <th width="10%"></th>
+                                                </thead>
+                                                <tbody id="pMail">
+                                                    <ui:repeat var="c" value="#{clientesCVS.model.correos}" varStatus="vsC">
+                                                        <tr data-row="#{vsC.index+1}">
+                                                            <td data-id="#{c.id_Correo}">#{p.tipo}</td>
+                                                            <td>#{c.correo}</td>
+                                                            <td>#{c.notas}</td>
+                                                            <td style='padding:0'><center style='padding:0'><i class='inPortal pe-7s-note' onclick="editRow();"/><i class='inPortal pe-7s-trash' onclick="deleteFromPortal()"/></center></td>
+                                                        </tr>
+                                                    </ui:repeat>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h:outputStylesheet library="css" name="bootstrap-datepicker3.css"/>
+            <h:outputStylesheet library="css" name="valuelists.css"/>
+            <h:outputStylesheet library="css" name="portalsCSS.css"/>
+            <h:outputScript library="js" name="checkListsControls.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.min.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.es.js"/>
+            <h:outputScript library="js" name="NumberFields.js"/>
+            <h:outputScript library="js" name="valuelistcontrol.js"/>
+            <h:outputScript library="js" name="portalActions.js"/>
+            <script type="text/javascript">
+                $(function(){
+                    reRunJS();
+                    $('a:not(#deleteRecordBtn,#deleteRecord\\:Btn)').click(function(e){
+                        if($('#mainForm\\:mainFormBtnF.btn-fill').size()>0 || $(".modPR,.newPR").size()>0)
+                            return confirm("No ha guardado los cambios realizados ¿Desea salir sin guardar?");
+                        else return true;
+                    });
+                });
+                function reRunJS()
+                {
+                    //runCheckListsControls();
+                    runDatePicker(window.jQuery);
+                    loadDatePickers();
+                }
+                function validateChange(el,ov)
+                {
+                    var $t=$(el),val=Number($t.val());
+                        //alert("dv: "+ov+" val: "+val);
+                        if(3>val)
+                        {
+                            if(2>val &amp;&amp; 3>ov)//Si de 2 pasa a 1
+                            {
+                                if(!confirm('Si cambia este valor, se perderá la fecha en que se volvió cliente, ¿desea continuar?'))
+                                {
+                                    $t.children().each(function(){
+                                        var $to=$(this),to=Number($to.val()),txt=$to.text();
+                                        //$t.children().each(function(){alert($(this).prop("outerHTML"));});
+                                        if(to===val)
+                                            $to.attr("selected",false);
+                                        else if(to===ov)
+                                        {
+                                            $to.attr("selected",true);
+                                            $to.val(ov);
+                                            //alert("$to.text()="+txt);
+                                            $to.text(txt);
+                                        }
+                                    });
+                                }
+                                else $t.next().click();
+                            }
+                            else if(ov>2)
+                            {
+                                if(!confirm('Si cambia este valor, se perderán la fecha y razón por la que dejó de ser cliente'+(2>val?', así como la fecha en que se volvió cliente':'')+', ¿desea continuar?'))
+                                {
+                                    $t.children().each(function(){
+                                        var $to=$(this),to=Number($to.val()),txt=$to.text();
+                                        //$t.children().each(function(){alert($(this).prop("outerHTML"));});
+                                        if(to===val)
+                                            $to.attr("selected",false);
+                                        else if(to===ov)
+                                        {
+                                            $to.attr("selected",true);
+                                            $to.val(ov);
+                                            //alert("$to.text()="+txt);
+                                            $to.text(txt);
+                                        }
+                                    });
+                                }
+                                else $t.next().click();
+                            }
+                            else $t.next().click();
+                        }
+                        else $t.next().click();
+                }
+                function onStatusChange(data)
+                {
+                    if(data.status==='success')
+                    {
+                        //alert(1);
+                        reRunJS();
+                        //alert(2);
+                    }
+                    //alert("finish");
+                }
+                function deletionAlert()
+                {
+                    if($("#mainForm\\:mainFormBtnF").hasClass("btn-fill"))
+                    {
+                        alert("No puede eliminarse un cliente con cambios por guardar.");
+                        return false;
+                    }
+                    else if($("#serviciosForm").find("input[type=checkbox]:checked").size()>1)
+                    {
+                        alert("No puede eliminarse el cliente mientras pertenezca a más de un área de SOLEMSA.");
+                        return false;
+                    }
+                    else if(#{not loginBean.usuario.directivo})
+                    {
+                        if(#{loginBean.usuario.area!=6})
+                        {
+                            if(#{loginBean.usuario.gerente})
+                            {
+                                if(Number(#{loginBean.usuario.area})!==Number($("#serviciosForm").find(":checked").eq(0).val()))
+                                {
+                                    alert("Usted no puede eliminar clientes de otras áreas de la empresa");
+                                    return false;
+                                }
+                                else if(Number("#{clientesCVS.model.zz_UsuarioCreacion}".split("_")[0])!==Number(#{loginBean.usuario.area}))
+                                {
+                                     alert("Sólo el usuario que registró a este cliente puede eliminarlo.");
+                                     return false;
+                                }
+                            }
+                            else
+                            {
+                                alert("Usted no cuenta con los privilegios necesarios para borrar este cliente.");
+                                return false;
+                            }
+                        }
+                        else if($("#serviciosForm").find(":checked").size()>0)
+                        {
+                            alert('No puede eliminar clientes que todavía pertenezcan a algun área de la empresa.');
+                            return false;
+                        }
+                        else if(#{(not loginBean.usuario.gerente) and loginBean.usuario.nombre!=clientesCVS.logCardData(clientesCVS.model.zz_UsuarioCreacion)})
+                        {
+                            alert('El cliente sólo puede ser eliminado por el usuario que lo registró, el jefe de área de éste, o por un directivo.');
+                            return false;
+                        }
+                    }
+                    return confirm('¿Desea eliminar el cliente actual?');
+                    event.stopPropagation();
+                }
+                function fromAction(p)
+                {
+                    if(p)
+                    {
+                        $("#logoForm\\:upload").click();
+                    }
+                }
+                function loadDatePickers()
+                {
+                    $('.date').each(function(){
+                        var $dp=$(this);
+                        var container=$dp.length>0 ? $dp : "body";
+                        $dp.datepicker({
+                            language: 'es',
+                            format: 'dd/mm/yyyy',
+                            container: container,
+                            orientation: 'bottom left',
+                            showOnFocus: true,
+                            todayHighlight: true,
+                            autoclose: true
+                        });
+                    });
+                }
+            </script>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

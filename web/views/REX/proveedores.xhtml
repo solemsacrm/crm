@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <f:metadata>
+        <f:viewAction action="#{loginBean.setActiveModule(7,10,'proveedores')}"/>
+    </f:metadata>
+
+    <h:body>
+
+        <ui:composition template="./../../WEB-INF/templates/REX_SideBarTemplate.xhtml">
+            
+            <ui:define name="content">
+            <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <h:form id="formu" style="display:none;">
+                        <h:inputText id="idHidden" value="#{proveedoresCRS.rowID}"/>
+                        <h:commandLink id="rowAction" action="#{proveedoresCRS.goToDetail()}">
+                            <f:param name="param1" value="#{proveedoresCRS.rowID}" />
+                        </h:commandLink>
+                        <h:commandButton id="refreshTb" action="#{proveedoresCRS.rmvRecord}"/>
+                    </h:form>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">
+                                    Proveedores
+                                </h4>
+                            </div>
+                            <div class="content table-responsive table-full-width">
+                                <table class="table table-hover table-striped">
+                                    <thead>
+                                        <th>ID</th>
+                                    	<th>NOMBRE</th>
+                                    	<th>CIUDAD</th>
+                                    	<th>ESTADO</th>
+                                        <th>Tipo</th>
+                                        <th><center><i class="rTb pe-7s-trash" style="display:none;font-size:18px;cursor:pointer" onclick="getMultipleIDs();"/></center></th>
+                                    </thead>
+                                    <tbody>
+                                        <ui:repeat var="p" value="#{proveedoresCRS.lista}">
+                                            <tr onclick="return getRow(#{p.id_REX_Proveedor})">
+                                            <td>#{p.id_REX_Proveedor}</td>
+                                            <td>#{p.nombre}</td>
+                                            <td>#{p.ciudad}</td>
+                                            <td>#{p.estado}</td>
+                                            <td>#{p.tipo}</td>
+                                            <td>
+                                            <center><h:form id="rTb">
+                                                <h:commandLink id="Btn" class="rTb" onclick="deleteRow(#{p.id_REX_Proveedor});return false;">
+                                                    <i class="pe-7s-trash" style="font-size: 18px;"/>
+                                                </h:commandLink>
+                                            </h:form></center>
+                                            </td>
+                                            </tr>
+                                        </ui:repeat>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+    
+</html>

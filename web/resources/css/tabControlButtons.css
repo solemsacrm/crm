@@ -1,0 +1,20 @@
+.btn-group-justified .btn-group>button
+{
+    padding-left:0;
+    padding-right:0;
+    border-color:#ccc;
+    background-color:#888888;
+    color:#ccc;
+    border-radius:4px 4px 0 0;
+}
+.btn-group-justified .btn-group:not(:first-of-type):not(:last-of-type)>button
+{
+    border-radius:0;
+}
+.btn-group-justified .btn-group.active>button
+{
+    border-color:#888888;
+    color:#888888;
+    background-color:transparent;
+    border-bottom-color:transparent;
+}

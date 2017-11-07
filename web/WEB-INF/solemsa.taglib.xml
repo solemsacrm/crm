@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE facelet-taglib PUBLIC
+  "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
+  "http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
+<facelet-taglib>
+    <namespace>http://gruposolemsa.com/facelets</namespace>
+    <tag>
+	<tag-name>ldbheader</tag-name>
+	<source>tags/ldbheader.xhtml</source>
+    </tag>
+    <tag>
+	<tag-name>valuelistset</tag-name>
+	<source>tags/valuelistset.xhtml</source>
+    </tag>
+    <tag>
+	<tag-name>ldbscripts</tag-name>
+	<source>tags/ldbscripts.xhtml</source>
+    </tag>
+</facelet-taglib>

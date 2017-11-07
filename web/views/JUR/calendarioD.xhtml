@@ -1,0 +1,384 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <h:body>
+        
+        <ui:composition template="./../../WEB-INF/templates/JUR_SideBarTemplate.xhtml">
+            
+            <ui:define name="content">
+                <div class="content" id="content" style="display:none;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header">
+                                    <div class="col-md-6">
+                                        <h4 class="title">
+                                            Calendario
+                                        </h4>
+                                    </div>
+                                    <div class="col-md-6" style="text-align:right;margin-left:0;padding-left:0;margin-right:0;padding-right:0">
+                                        <h:form id="headerForm">
+                                        <div class="col-md-7" style="font-size:30px;text-align:center;margin-right:0;padding-right:0;margin-left:0;padding-left:0"/>
+                                        <div class="col-md-1" style="font-size:30px;text-align:center;margin-right:0;padding-right:0;margin-left:0;padding-left:0">
+                                            <i class="pe-7s-angle-left" onclick="this.nextSibling.click()" style="cursor:pointer"/>
+                                            <h:commandButton style="display:none;">
+                                                <f:ajax render="selectYear Calendario btnCal mainForm" listener="#{calendarioCVS.changeDisplayedYear(2)}"/>
+                                            </h:commandButton>
+                                        </div>
+                                        <div class="col-md-3" style="text-align:center;margin-right:0;padding-right:0;margin-left:0;padding-left:0">
+                                            <h:selectOneMenu id="selectYear" styleClass="form-control" value="#{calendarioCVS.displayedYear}">
+                                                <f:selectItems value="#{calendarioCVS.years}"/>
+                                                <f:ajax render="Calendario btnCal mainForm" listener="#{calendarioCVS.changeDisplayedYear(3)}"/>
+                                            </h:selectOneMenu>
+                                        </div>
+                                        <div class="col-md-1" style="font-size:30px;text-align:left;margin-right:0;padding-right:0;margin-left:0;padding-left:0">
+                                            <i class="pe-7s-angle-right" onclick="this.nextSibling.click()" style="cursor:pointer"/>
+                                            <h:commandButton style="display:none;">
+                                                <f:ajax render="selectYear Calendario btnCal mainForm" listener="#{calendarioCVS.changeDisplayedYear(1)}"/>
+                                            </h:commandButton>
+                                        </div>
+                                        </h:form>
+                                    </div>
+                                <!--<p class="category">Listado</p>-->
+                                </div>
+                                <div class="content">
+                                    <h:panelGroup id="Calendario" class="clo-md-12">
+                                        <embed src="https://www.poderjudicial-gto.gob.mx/pdfs/calendario#{(calendarioCVS.displayedYear>2008?'':'_')+=calendarioCVS.displayedYear}.pdf" width="100%" height="950px" alt="pdf" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html"/>                                     
+                                    </h:panelGroup>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <a class="btn btn-danger btn-fill" style="width:100%;padding-left:0;padding-right:0" href="https://www.poderjudicial-gto.gob.mx/index.php" target="_blank">Ir a página del poder judicial</a>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <a class="btn btn-danger btn-fill" style="width:100%;padding-left:0;padding-right:0" href="https://www.poderjudicial-gto.gob.mx/modules.php?name=Transparencia&amp;file=index&amp;func=contenido&amp;cat=48&amp;scat=" target="_blank">Ir a lista de calendarios</a>
+                                        </div>
+                                        <h:panelGroup id="btnCal" class="col-md-4">
+                                            <a class="btn btn-danger btn-fill" style="width:100%;padding-left:0;padding-right:0" href="https://www.poderjudicial-gto.gob.mx/pdfs/calendario#{calendarioCVS.displayedYear}.pdf" target="_blank">Ver por fuera</a>
+                                        </h:panelGroup>
+                                    </div>
+                                    <div class="clearfix"/>
+                                </div>
+                            </div>
+                        </div>
+                            
+                        <div class="col-md-4">
+                            <h:form id="mainForm">
+                                <div class="card">
+                                    <div class="header">
+                                        <h4 class="title">
+                                            Fechas #{calendarioCVS.displayedYear}
+                                        </h4>
+                                    </div>
+                                    <div class="content">
+                                            <div class="row">
+                                                <div class="col-md-12 accordion">
+                                                        <div class="row">
+                                                            <div class="col-md-10"/>
+                                                            <div class="col-md-2" style="text-align: right">
+                                                                <i class="pe-7s-plus accordionElement" style="font-size:20px;cursor:pointer;" onclick="$(this).next().click();"/>
+                                                                <h:commandButton id="addToAccordionBtn" style="display:none">
+                                                                    <f:ajax render="mainForm" listener="#{calendarioCVS.addAccordionNode}" onevent="reRunJSCode"/>
+                                                                </h:commandButton>
+                                                            </div>
+                                                        </div>
+                                                        <ul id="accordionElementUL" class="nav nav-pills nav-stacked" style="max-height:925px;overflow-y:auto;overflow-x:hidden">
+                                                            <ui:repeat var="a" value="#{calendarioCVS.lista}" varStatus="vs">
+                                                                <li role="presentation" class="accordionElement" style="#{(1>vs.index and 1>a.id_JUR_Fecha)?'display:none':''}">
+                                                                    <div class="row">
+                                                                        <div class="col-md-10 accText">
+                                                                            #{calendarioCVS.getAccordeonTitle(a)}
+                                                                        </div>
+                                                                        <div class="col-md-2" style="text-align:right">
+                                                                            <i class="pe-7s-trash accordionElement" style="font-size:20px;" onclick="if(confirm('¿Desea eliminar esta fecha?'))this.nextSibling.click();else return false;"/>
+                                                                            <h:commandButton id="rmvFromAccordionTabBtn" style="display:none" a:data-index="#{vs.index}">
+                                                                                <f:ajax render="mainForm" listener="#{calendarioCVS.rmvAccordionNode(a,vs.index)}" onevent="reRunJSCode"/>
+                                                                            </h:commandButton>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                                <li class="#{(1>vs.index and 1>a.id_JUR_Fecha)?'':'accPanel'}">
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <div class="form-group">
+                                                                                <h:outputLabel>Tipo</h:outputLabel>
+                                                                                <h:selectOneMenu id="FU" styleClass="form-control #{'dateAction'+=vs.index}" value="#{a.tipo}">
+                                                                                    <f:selectItem itemValue="true" itemLabel="Fecha única"/>
+                                                                                    <f:selectItem itemValue="false" itemLabel="Periodo de tiempo"/>
+                                                                                    <f:ajax event="change" render="F2 mainFormBtnF" listener="#{calendarioCVS.setFechaFinAfterAjax(a,vs.index)}" onevent="function(data){onTipoChange(data,'dateAction#{vs.index}');}"/>
+                                                                                </h:selectOneMenu>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group">
+                                                                                <h:outputLabel>Fecha #{(a.fechaFinString!='' and a.fechaFinString!=null)?'Inicial':''}</h:outputLabel>
+                                                                                <div class="input-group date">
+                                                                                    <h:inputText id="F1" a:data-index="#{vs.index}" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{a.fechaInicioString}" style="padding:5px">
+                                                                                        <f:ajax event="change" listener="#{calendarioCVS.checkForChanges}" render="mainFormBtnF"/>
+                                                                                    </h:inputText>
+                                                                                    <div class="input-group-addon" style="padding:5px">
+                                                                                        <span class="pe-7s-date" style="font-size:25px;"/>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6 #{'dateAction'+=vs.index}" style="#{(a.fechaFinString!='' and a.fechaFinString!=null)?'':'display:none;'}">
+                                                                            <h:outputLabel>Fecha Final</h:outputLabel>
+                                                                            <div class="input-group date">
+                                                                                <h:inputText id="F2" a:data-index="#{vs.index}" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{a.fechaFinString}" style="padding:5px" a:data-checking="1" onchange="onFinalDateChange(this);">
+                                                                                    <f:ajax event="change" listener="#{calendarioCVS.checkForChanges}" render="mainFormBtnF"/>
+                                                                                </h:inputText>
+                                                                                <div class="input-group-addon" style="padding:5px">
+                                                                                    <span class="pe-7s-date" style="font-size:25px;"/>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <div class="form-group">
+                                                                                <h:outputLabel>Descripción</h:outputLabel>
+                                                                                <h:inputTextarea a:data-index="#{vs.index}" id="DE" styleClass="form-control" a:placeholder="Descripción" a:rows="4" value="#{a.descripcion}">
+                                                                                    <f:ajax event="change" listener="#{calendarioCVS.checkForChanges}" render="mainFormBtnF"/>
+                                                                                </h:inputTextarea>
+                                                                            </div>
+                                                                        </div>
+                                                                     </div>
+                                                                    <div class="form-group" style="text-align:right;">
+                                                                        <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;">
+                                                                            <f:ajax listener="#{calendarioCVS.updateFormServicios(a,vs.index)}" render="mainFormBtnF"/>
+                                                                        </h:commandButton>
+                                                                        <h:commandButton id="mainFormBtnF" a:data-etapaid="#{a.id_JUR_Fecha}" class="#{calendarioCVS.cambios[vs.index]?'btn btn-success btn-fill':'btn btn-success'}" value="Guardar Cambios" onclick="if((this.classList+'').indexOf('btn-fill')>-1)this.previousSibling.click();return false;"/>
+                                                                    </div>
+                                                                </li>
+                                                            </ui:repeat>
+                                                        </ul>
+                                                </div>
+                                            </div>
+                                        <div class="clearfix"/>
+                                    </div>
+                                </div>
+                            </h:form>
+                        </div>
+                    </div>
+                    
+                    <h:form id="deleteRecord" style="display:none;"><h:commandLink id="Btn" onclick="return deletionAlert()" action="#{casosCVS.deleteJUR_Casos()}">
+                        <i class="pe-7s-trash"/>
+                    </h:commandLink></h:form>
+                </div>
+            </div>
+            <h:outputStylesheet library="css" name="portalsCSS.css"/>
+            <h:outputStylesheet library="css" name="valuelists.css"/>
+            <h:outputStylesheet library="css" name="bootstrap-datepicker3.css"/>
+            <h:outputStylesheet library="css" name="accordions.css"/>
+            <h:outputScript library="js" name="NumberFields.js"/>
+            <h:outputScript library="js" name="valuelistcontrol.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.min.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.es.js"/>
+            <h:outputScript library="js" name="portalActions.js"/>
+            <h:outputScript library="js" name="accordions.js"/>
+            <script type="text/javascript">
+                $(function(){
+                    runJScode(false,true,false);
+                    $(".accordion").each(function(){
+                        dpC=0;
+                        loadDatePickers(this);
+                        delete dpC;
+                    });
+                    $("#content").css("display","block");
+                    $('a:not(#deleteRecordBtn,#deleteRecord\\:Btn,.dropdown-toggle,.btn-danger)').click(function(e){
+                        if($('.btn-success.btn-fill').size()>0 || $(".modPR,.newPR").size()>0)
+                            return confirm("No ha guardado los cambios realizados ¿Desea salir sin guardar?");
+                        else return true;
+                    });
+                    initializeAccordion(true,true);
+                });
+                function loadDatePickers($panel){
+                    $('.date',$panel).each(function(){
+                        var $dp=$(this);
+                        var container=($dp.length>0&amp;&amp;1>dpC) ? $dp.closest(".card") : "body",
+                        dYear=Number($("#headerForm\\:selectYear").val());
+                        dpC++;
+                        var mDate="07/01/"+(dYear+1);
+                        dYear="25/12/"+(dYear-1);
+                        $dp.datepicker({
+                            language: 'es',
+                            format: 'dd/mm/yyyy',
+                            startDate: dYear,
+                            endDate: mDate,
+                            container: container,
+                            showOnFocus: true,
+                            todayHighlight: true,
+                            autoclose: true
+                        });
+                    });
+                }
+                function onFinalDateChange($this)
+                {
+                    if($this.dataset.checking==1)
+                    {
+                        $this.dataset.checking=2;
+                        var $p=$this.parentNode.parentNode.parentNode,arr=$($p.children[0]).find("input").val().split("/"),
+                        d1=new Date(arr[2],arr[1],arr[0]),
+                        d2=$this.value.split("/");
+                        d2=new Date(d2[2],d2[1],d2[0]);
+                        if(d1.getTime()>=d2.getTime())
+                        {
+                            alert("Por favor seleccione una fecha posterior a "+arr[0]+"/"+arr[1]+"/"+arr[2]);
+                            d2=Number(arr[1]);
+                            d1=Number(arr[0]);
+                            var flag=true;
+                            switch(d2)
+                            {
+                                case 2:if(Number(arr[2])%4!==0)flag=29>d1;else flag=28>d1;break;
+                                case 4||6||9||11:flag=30>d1;break;
+                                default:flag=31>d1;break;
+                            }
+                            if(flag)
+                            {
+                                d1++;
+                                arr[0]=(10>d1)?("0"+d1):d1;
+                            }
+                            else if(12>d2)
+                            {
+                                d2++;
+                                arr[0]="01";
+                                arr[1]=(10>d2)?("0"+d2):d2;
+                            }
+                            else
+                            {
+                                d1=Number(arr[2])+1;
+                                arr[0]=arr[1]="01";
+                                arr[2]=d1;
+                            }
+                            newvalue=arr[0]+"/"+arr[1]+"/"+arr[2];
+                            $this.value=newvalue;
+                            $this.blur();
+                            $p.nextSibling.nextSibling.find(".btn").addClass("btn-fill");
+                        }
+                        else newvalue=null;
+                    }
+                    else if($this.dataset.checking==2)
+                    {
+                        $this.dataset.checking=3;
+                        if(newvalue!==null)
+                        {
+                            $this.value=newvalue;
+                            $this.blur();
+                        }
+                    }
+                    else
+                    {
+                        $this.dataset.checking=1;
+                        if(newvalue!==null)
+                        {
+                            $this.value=newvalue;
+                            $this.change();
+                        }
+                        delete newvalue;
+                    }
+                }
+                function deletionAlert()
+                {
+                    return confirm('¿Desea eliminar el material actual?');
+                }
+                function fromAction(p)
+                {
+                    if(p)
+                        document.getElementById('mainForm:mainFormBtn').click();
+                }
+                function onClikVL(data,n,current)
+                {
+                    if(data.status==='success')
+                    {
+                        if(n===0)
+                            document.getElementById(current).click();
+                        else
+                            afterAjaxSelect("mainForm\\:"+current,n); 
+                    }
+                }
+                function reRunJSCode(d){
+                    if(d.status==='success')
+                    {
+                        $(".accordion").each(function(){
+                            dpC=0;
+                            loadDatePickers(this);
+                            delete dpC;
+                            initializeAccordion(true,true);
+                            $(this).children('ul').children().filter(function(index){
+                                return index%2!==0;
+                            }).each(function(){
+                                if((this.children[3].children[1].classList+"").indexOf("fill")>-1)
+                                    this.previousSibling.previousSibling.click();
+                            });
+                        });
+                    }
+                }
+                function goToExpediente()
+                {
+                    if($("#mainForm\\:mainFormBtnF").hasClass("btn-fill"))
+                    {
+                        alert('Por favor guarde los cambios.');
+                        return false;
+                    }
+                    else
+                    {
+                        var $target=$(event.target).next();
+                        $target.val($("#mainForm#{loginBean.getUsuario().gerente?'':'RH'}\\:modelID").val());
+                        return true;
+                    }
+                }
+                function onMes1Change(data)
+                {
+                    if(data.status==='success')
+                    {
+                        data=$('#SS1');
+                        var $s=$(data[0].previousSibling);
+                        data.text($s.text());
+                        data.off();
+                        data.click(function(){
+                            $s.focus();
+                        });
+                    }
+                }
+                function onDia1Focus(data)
+                {
+                    if(data.status==='success')
+                    {
+                        if(1>$('#mainForm\\:M1').val())
+                        {
+                            data=$('#SS1');
+                            var $s=$(data[0].previousSibling);
+                            $s.blur();
+                            alert('Por favor escoja un caso');
+                            data.off("click");
+                            data.click(function(){
+                                $s.focus();
+                            });
+                        }
+                        else onClikVL(data,1,'D1');
+                    }
+                }
+                function onTipoChange(data,clase)
+                {
+                    if(data.status==='success')
+                    {
+                        var $da=$('.'+clase);
+                        if($da.eq(0).val()=='false')
+                            $da.eq(1).css('display','block');
+                        else $da.eq(1).css('display','none');
+                    }
+                }
+            </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+    
+</html>

@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <h:body>
+        
+        <ui:composition template="./../../WEB-INF/templates/REX_SideBarTemplate.xhtml">
+            
+            <ui:define name="content">
+                <div class="content" id="content" style="display:none;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">
+                                        Editar Material
+                                    </h4>
+                                <!--<p class="category">Listado</p>-->
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm">
+                                        <h:inputHidden id="idHidden" value="#{materialesCRS.rowID}"/>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h:outputLabel>ID</h:outputLabel>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" value="#{materialesCVS.model.id_REX_Material}" rendered="#{materialesCVS.model.id_REX_Material!=0}"/>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" rendered="#{materialesCVS.model.id_REX_Material==0}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Tipo</h:outputLabel>  
+                                                    <h:selectOneMenu id="TI" styleClass="form-control" value="#{materialesCVS.model.tipo}">
+                                                        <f:selectItem itemValue="Acero"/>
+                                                        <f:selectItem itemValue="Plástico"/>
+                                                        <f:selectItem itemValue="Otro"/>
+                                                        <f:ajax event="change" listener="#{materialesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Nombre</h:outputLabel>
+                                                    <h:inputText id="NM" styleClass="form-control" a:placeholder="Nombre" value="#{materialesCVS.model.nombre}">
+                                                        <f:ajax event="change" listener="#{materialesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Unidad</h:outputLabel>
+                                                    <h:inputText id="UN" styleClass="form-control" a:placeholder="Unidad" value="#{materialesCVS.model.unidad}">
+                                                        <f:ajax event="change" listener="#{materialesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Observaciones</h:outputLabel>
+                                                    <h:inputTextarea id="NT" styleClass="form-control" a:placeholder="Observaciones" value="#{materialesCVS.model.notas}" rows="4">
+                                                        <f:ajax event="change" listener="#{materialesCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputTextarea>
+                                                </div>
+                                            </div>
+                                        </div>                                     
+                                        <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;">
+                                            <f:ajax listener="#{materialesCVS.updateFormServicios}" render="mainForm"/>
+                                        </h:commandButton>
+                                        <h:commandButton id="mainFormBtnF" class="#{materialesCVS.cambios?'btn btn-success btn-fill pull-right':'btn btn-success pull-right'}" value="Guardar Cambios" onclick="fromAction(#{materialesCVS.cambios});return false;"/>
+                                        <div class="clearfix"/>
+                                    </h:form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header-with-icon">
+                                    <div class="col-md-11">
+                                        <h4 class="title">Proveedores</h4>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <i class="pe-7s-plus" data-msg="un proveedor" onclick="addPortalRow('pOferta',4,new Array('disabled','1','select','2_unique','number','3'));"/>
+                                    </div>
+                                </div>
+                                    <div class="col-md-12">
+                                        <div class="content table-responsive table-full-width">
+                                            <h:form id="pOfertaF" style="position:absolute;z-index:999;">
+                                                <h:inputHidden id="commit" value="#{materialesCVS.portalValues}"/>
+                                                <h:selectOneMenu id="prvL" styleClass="form-control unique" a:size="#{materialesCVS.proveedores.display}" style="width:0;opacity:0;">
+                                                    <f:selectItems value="#{materialesCVS.proveedores.list}" var="c" itemValue="#{c.id}" itemLabel="#{c.label}"/>
+                                                    <f:ajax event="focus" render="prvL" listener="#{materialesCVS.loadProveedoresList}" onevent="function(data){loadSourceSelect(data,trNumber,'pOfertaF\\:prvL');}" disabled="#{materialesCVS.proveedores.length>0}"/>
+                                                </h:selectOneMenu>
+                                                <h:commandButton id="btn" style="display:none;">
+                                                    <f:ajax event="click" listener="#{materialesCVS.commitPortal}" execute="commit" render="commit" onevent="function(data){if(data.status==='success')replaceRowType(#{false},'@tableRowNumber');}"/>
+                                                </h:commandButton>
+                                                <h:commandButton id="btnD" style="display:none;">
+                                                    <f:ajax event="click" listener="#{materialesCVS.deleteFromPortal}" execute="commit" render="@none"/>
+                                                </h:commandButton>
+                                            </h:form>
+                                            <table id="pOfertaT" class="table table-hover table-striped portal" data-rows="#{materialesCVS.model.REX_Oferta.size()}" data-sort="2_A">
+                                                <thead id="pHead">
+                                                    <th width="10%">ID</th>
+                                                    <th width="35%">Material</th>
+                                                    <th width="15%">Precio</th>
+                                                    <th width="25%">Moneda</th>
+                                                    <th width="15%"></th>
+                                                </thead>
+                                                <tbody id="pOferta">
+                                                    <ui:repeat var="p" value="#{materialesCVS.model.REX_Oferta}" varStatus="vs">
+                                                        <tr data-row="#{vs.index+1}">
+                                                            <td data-id="#{p.id_REX_Ofertas}">#{p.REX_Proveedor.id_REX_Proveedor}</td>
+                                                            <td class="unique" data-value="#{p.REX_Proveedor.id_REX_Proveedor}">#{p.REX_Proveedor.nombre}</td>
+                                                            <td class="number">$<h:outputText value="#{p.precio}"><f:convertNumber groupingUsed="true" minFractionDigits="2" maxFractionDigits="2" locale="en-US"/></h:outputText></td>
+                                                            <td>#{p.moneda}</td>
+                                                            <td style='padding:0'><center style='padding:0'><i class='inPortal pe-7s-note' onclick="editRow();"/><i class='inPortal pe-7s-trash' onclick="deleteFromPortal()"/></center></td>
+                                                        </tr>
+                                                    </ui:repeat>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"/>
+                            </div>
+                        </div>
+                    </div>
+                    <h:form id="deleteRecord" style="display:none;"><h:commandLink id="Btn" onclick="return deletionAlert()" action="#{materialesCVS.deleteREX_Material()}">
+                        <i class="pe-7s-trash"/>
+                    </h:commandLink></h:form>
+                </div>
+            </div>
+            <h:outputStylesheet library="css" name="portalsCSS.css"/>
+            <h:outputStylesheet library="css" name="valuelists.css"/>
+            <h:outputScript library="js" name="NumberFields.js"/>
+            <h:outputScript library="js" name="valuelistcontrol.js"/>
+            <h:outputScript library="js" name="portalActions.js"/>
+            <script type="text/javascript">
+                $(function(){
+                    runJScode(false,false);
+                    $("#content").css("display","block");
+                    $('a:not(#deleteRecordBtn,#deleteRecord\\:Btn)').click(function(e){
+                        if($('#mainForm\\:mainFormBtnF.btn-fill').size()>0 || $(".modPR,.newPR").size()>0)
+                            return confirm("No ha guardado los cambios realizados ¿Desea salir sin guardar?");
+                        else return true;
+                    });
+                });
+                function deletionAlert()
+                {
+                    return confirm('¿Desea eliminar el material actual?');
+                }
+                function fromAction(p)
+                {
+                    if(p)
+                        document.getElementById('mainForm:mainFormBtn').click();
+                }
+                function onClikVL(data,n,current)
+                {
+                    if(data.status==='success')
+                    {
+                        if(n===0)
+                            document.getElementById(current).click();
+                        else
+                            afterAjaxSelect(current,n); 
+                    }
+                }
+            </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+    
+</html>

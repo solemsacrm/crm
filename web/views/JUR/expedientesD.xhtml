@@ -1,0 +1,533 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <f:metadata>
+        <f:viewAction action="#{loginBean.setHideHeaderRecordControls(true)}"/>
+    </f:metadata>
+    
+    <h:body>
+        
+        <ui:composition template="./../../WEB-INF/templates/JUR_SideBarTemplate.xhtml">
+            
+            <ui:define name="content">
+                <div class="content" id="content" style="display:none;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                    <h:form id="formu" style="display:none;">
+                                        <h:inputHidden id="idHidden" value="#{etapasCVS.rowID}"/>
+                                        <h:commandButton action="#{etapasCVS.goToCaso()}" style="display:none;"/>
+                                    </h:form>
+                                <h:form id="formHeader" class="accordion">
+                                <div class="header">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <h4 class="title">
+                                                Expediente del Caso <h:commandLink value="#{etapasCVS.JUR_Caso.nombre}" style="font:inherit;color:inherit" a:onclick="if(confirm('¿Desea volver al caso?')){var $ih=$('#formu\\:idHidden');$ih.val(#{etapasCVS.getJUR_Caso().id_JUR_Caso});$ih.next().click();}"/>
+                                            </h4>
+                                        </div>
+                                        <h:panelGroup class="col-md-2" style="text-align: right" rendered="#{loginBean.getUsuario().gerente}">
+                                            <i class="pe-7s-plus accordionElement" style="font-size:29px;cursor:pointer;" onclick="$(this).next().click();"/>
+                                            <h:commandButton id="addToAccordionBtn" style="display:none">
+                                                <f:ajax render="mainForm" listener="#{etapasCVS.addAccordionNode}" onevent="function(data){if(data.status==='success')initializeAccordion(true,false);$('li.accordionElement:last').click();}"/>
+                                            </h:commandButton>
+                                        </h:panelGroup>
+                                    </div>
+                                <!--<p class="category">Listado</p>-->
+                                </div>
+                                </h:form>
+                                <div class="content">
+                                    <h:form id="mainForm" class="accordion">
+                                        <ul id="accordionElementUL" class="nav nav-pills nav-stacked">
+                                            <ui:repeat var="a" value="#{etapasCVS.modelList}" varStatus="vs">
+                                                <li role="presentation" class="accordionElement">
+                                                    <h:commandButton id="accordinLoadBtn" a:data-index="#{vs.index}" class="accPanelLoader" style="display:none;" rendered="#{1>a.JUR_EtapaDetalleLength}">
+                                                        <f:ajax event="keyup" render="portalPG accordinLoadBtn" listener="#{etapasCVS.loadModelsOnClick}"/>
+                                                    </h:commandButton>
+                                                    <!--<h:inputHidden id="accPresName" value=""/>-->
+                                                    <div class="row">
+                                                        <div class="col-md-10 accText">
+                                                            #{a.nombre}
+                                                        </div>
+                                                        <h:panelGroup class="col-md-2" style="text-align:right" rendered="#{loginBean.getUsuario().gerente}">
+                                                            <i class="pe-7s-trash accordionElement" style="font-size:20px;" onclick="this.nextSibling.click();"/>
+                                                            <h:commandButton id="rmvFromAccordionTabBtn" style="display:none" a:data-index="#{vs.index}" onclick="return confirm('¿Está seguro de querer eliminar esta etapa?');">
+                                                                <f:ajax render="mainForm" listener="#{etapasCVS.rmvAccordionNode(vs.index)}" onevent="function(data){if(data.status==='success')initializeAccordion(true,false);}"/>
+                                                            </h:commandButton>
+                                                        </h:panelGroup>
+                                                    </div>
+                                                </li>
+                                                <li class="accPanel">
+                                                    <!--<h:panelGroup class="accPanelForm" id="mainForm">-->
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <h:outputLabel>Nombre</h:outputLabel>
+                                                                <h:inputText id="NM" a:data-index="#{vs.index}" styleClass="form-control" a:placeholder="Nombre" value="#{a.nombre}" readonly="#{!loginBean.getUsuario().gerente}">
+                                                                    <f:ajax event="change" listener="#{etapasCVS.checkForChanges}" render="mainFormBtnF" disabled="#{loginBean.getUsuario().gerente}"/>
+                                                                </h:inputText>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row" style="position:relative">
+                                                            <h:panelGroup rendered="#{loginBean.getUsuario().gerente}">
+                                                            <div class="col-md-10">
+                                                                <div class="form-group">
+                                                                    <h:outputLabel>Descripción</h:outputLabel>
+                                                                    <h:inputTextarea id="DE" a:data-index="#{vs.index}" styleClass="form-control" a:placeholder="Descripción" value="#{a.descripcion}" rows="4">
+                                                                        <f:ajax event="change" listener="#{etapasCVS.checkForChanges}" render="mainFormBtnF"/>
+                                                                    </h:inputTextarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2" style="position:absolute;bottom:15px;right:0">
+                                                                <div class="form-group">
+                                                                    <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;">
+                                                                        <f:ajax listener="#{etapasCVS.updateFormServicios(vs.index)}" render="mainFormBtnF NM DE"/>
+                                                                    </h:commandButton>
+                                                                    <h:commandButton id="mainFormBtnF" a:data-etapaid="#{a.id_JUR_Etapa}" class="#{etapasCVS.cambios[vs.index]?'btn btn-success btn-fill pull-right':'btn btn-success pull-right'}" value="Guardar Cambios" onclick="var $btns=$('.btn-success').filter(function(){return $(this).hasClass('btn-fill');}),i=$btns.index(this);if($btns.filter(function(index){if(i>index)return 1>Number($(this).data('etapaid'));}).size())alert('Hay etapas previas a ésta que deben guardarse primero.');else{fromAction(#{etapasCVS.cambios[vs.index]},this.id);actionforclick($(this));}return false;"/>
+                                                                </div>
+                                                            </div>
+                                                            </h:panelGroup>
+                                                            <h:panelGroup rendered="#{!loginBean.getUsuario().gerente}">
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <h:outputLabel>Descripción</h:outputLabel>
+                                                                        <h:inputTextarea a:data-index="#{vs.index}" styleClass="form-control" a:placeholder="Descripción" value="#{a.descripcion}" rows="4" readonly="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </h:panelGroup>
+                                                        </div>
+                                                            
+                                                        <div class="row" style="padding-top:0;height:268px;display:block;overflow:hidden">
+                                                            <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <div class="header-with-icon" style="display:none">
+                                                                    <div class="col-md-11"></div>
+                                                                    <div class="col-md-1">
+                                                                        <i class="pe-7s-plus" style="font-size:20px;" onclick="addPortalRow('pCots#{vs.index}',7,new Array('calendar','1','number','2__f_2_r','select','3','textarea','4_3,5_3,6_3,7_3'));"/>
+                                                                    </div>
+                                                                </div>
+                                                                <h:panelGroup id="portalPG" class="content table-responsive table-full-width" style="padding:0;margin:0;">
+                                                                        <h:outputScript rendered="#{etapasCVS.detalleIsLoaded(vs.index)}">
+                                                                            var $p=$(".portal").eq(#{vs.index}).children(":last");
+                                                                            if($p.size()>0)
+                                                                                limitTdWidth($p);
+                                                                            if(#{loginBean.getUsuario().gerente})
+                                                                                initPopover("pCots"+#{vs.index});
+                                                                        </h:outputScript>
+                                                                        <h:inputHidden id="commit" value="#{etapasCVS.portalValues}"/>
+                                                                        <h:selectOneMenu id="prvL" styleClass="form-control standard" style="max-width:0;opacity:0;max-height:0;margin:0;padding:0;position:absolute;z-index:-999">
+                                                                            <f:selectItem itemValue="Minutos"/>
+                                                                            <f:selectItem itemValue="Horas"/>
+                                                                            <f:selectItem itemValue="Días"/>
+                                                                        </h:selectOneMenu>
+                                                                        <h:commandButton id="btn" style="display:none;">
+                                                                            <f:ajax event="click" listener="#{etapasCVS.commitPortal(vs.index)}" execute="commit" render="commit" onevent="function(data){if(data.status==='success'){replaceRowType(false,'@tableRowNumber');initPopover('pCots'+#{vs.index});}}"/>
+                                                                        </h:commandButton>
+                                                                        <h:commandButton id="btnD" style="display:none;">
+                                                                            <f:ajax event="click" listener="#{etapasCVS.deleteFromPortal(vs.index)}" execute="commit" render="@none"/>
+                                                                        </h:commandButton>
+                                                                        <h:commandButton id="loadPopover" style="display:none;">
+                                                                            <f:ajax event="click" listener="#{etapasCVS.loadPopoverContent}" execute="commit" render="commit pocF:trashIcon" onevent="function(data){if(data.status==='success'){onDetalleClick($(this));}}"/>
+                                                                        </h:commandButton>
+                                                                    <table id="pCotsT" class="table table-hover table-striped portal" style="overflow:hidden;width:100%;/*table-layout:fixed;*/" data-rows="#{a.JUR_EtapaDetalleLength}" data-sort="0_A">
+                                                                        <thead id="pHead" style="overflow:hidden;display:table;width:100%;table-layout:fixed;" data-trPopover="popOverContent,title='Programar Notificación',data-placement='left'" data-trEvent="click_onDetalleClick($(this),false);">
+                                                                            <th width="8.5%" style="padding-left:0;padding-top:0;text-align:center">Fecha</th>
+                                                                            <th width="6.5%" style="padding-top:0;text-align:right;padding-right:0">Dura</th>
+                                                                            <th width="10%" style="padding-top:0;text-align:left;padding-left:0">ción</th>
+                                                                            <th width="15%" style="padding-top:0;text-align:center">Asuntos Tratados</th>
+                                                                            <th width="20%" style="padding-top:0;text-align:center">Resultados</th>
+                                                                            <th width="20%" style="padding-top:0;text-align:center">Conclusiones</th>
+                                                                            <th width="15%" style="padding-top:0;text-align:center">Notas</th>
+                                                                            <th width="5%" style="text-align:right;padding-right:0;color:#000;padding-top:0"><i class="pe-7s-plus" style="font-size:20px;#{loginBean.getUsuario().gerente?'':'visibility:hidden;'}" onclick="var pPG=this.parentNode.parentNode.parentNode.parentNode.parentNode;if($(pPG.parentNode.parentNode.parentNode.previousSibling.previousSibling).find('input[type=submit].btn-fill').size()>0){alert('Por favor guarde los cambios para poder continuar.');return false;}else pPG.previousSibling.children[1].children[0].click();"/></th>
+                                                                        </thead>
+                                                                        <tbody id="pCots#{vs.index}" style="display:block;width:100%;height:229px;overflow:auto;">
+                                                                            <ui:repeat var="p" value="#{a.JUR_EtapaDetalle}" varStatus="vs2" rendered="#{a.JUR_EtapaDetalleLength>0}">
+                                                                                <tr data-row="#{vs2.index+1}" style="width:100%;" data-toggle="popover" title="Programar Notificación" data-placement="left" onclick="onDetalleClick($(this),false);">
+                                                                                    <td class="calendar" data-id="#{p.id_JUR_EtapaDetalle}" style="width:8.5%;text-align:center;padding-left:1px;padding-right:1px;" data-inFieldStyle="padding-left:1px;padding-right:1px;text-align:center;">#{p.fechaString}</td>
+                                                                                    <td class="number" style="width:6.5%;text-align:right;padding-left:1px;padding-right:1px;" data-inFieldStyle="padding-left:1px;padding-right:1px;text-align:right;">#{p.duracion}</td>
+                                                                                    <td style="width:10%;text-align:left;padding-left:1px;padding-right:1px;">#{p.unidadTiempo}</td>
+                                                                                    <td style="width:15%;text-align:justify;padding-left:1px;padding-right:1px;">#{p.asuntosTratados}</td>
+                                                                                    <td style="width:20%;text-align:justify;padding-left:1px;padding-right:1px;">#{p.resultados}</td>
+                                                                                    <td style="width:20%;text-align:justify;padding-left:1px;padding-right:1px;">#{p.conclusiones}</td>
+                                                                                    <td style="width:15%;text-align:justify;padding-left:1px;padding-right:1px;">#{p.notas}</td>
+                                                                                    <td style="width:5%;text-align:center;margin-left:1px;margin-right:1px;"><center style="#{loginBean.getUsuario().gerente?'':'visibility:hidden;'}"><i class='inPortal pe-7s-note' onclick="editRow();"/><i class='inPortal pe-7s-trash' onclick="deleteFromPortal()"/></center></td>
+                                                                                </tr>
+                                                                            </ui:repeat>
+                                                                            <tr data-row="-1" style="width:100%;;overflow:hidden;display:table;max-height:0;background-color:#FFF">
+                                                                                <td class="calendar" data-id="-1" style="width:8.5%;text-align:center;padding-left:1px;padding-right:1px;" data-inFieldStyle="padding-left:1px;padding-right:1px;text-align:center;"></td>
+                                                                                <td style="width:6.5%;text-align:right;padding-left:1px;padding-right:1px;" data-inFieldStyle="padding-left:1px;padding-right:1px;text-align:right;"></td>
+                                                                                <td style="width:10%;text-align:left;padding-left:1px;padding-right:1px;"></td>
+                                                                                <td style="width:15%;text-align:justify;padding-left:1px;padding-right:1px;"></td>
+                                                                                <td style="width:20%;text-align:justify;padding-left:1px;padding-right:1px;"></td>
+                                                                                <td style="width:20%;text-align:justify;padding-left:1px;padding-right:1px;"></td>
+                                                                                <td style="width:15%;text-align:justify;padding-left:1px;padding-right:1px;"></td>
+                                                                                <td style="width:5%;text-align:center;margin-left:1px;margin-right:1px;"></td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </h:panelGroup>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="clearfix"/>
+                                                    <!--</h:panelGroup>-->
+                                                </li>
+                                            </ui:repeat>
+                                        </ul>
+                                    </h:form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h:form id="deleteRecord" style="display:none;"><h:commandLink id="Btn" onclick="return deletionAlert()" action="#{etapasCVS.deleteJUR_Etapas()}">
+                        <i class="pe-7s-trash"/>
+                    </h:commandLink></h:form>
+                    <div id="popOverContent" style="display:none;">
+                        <h:form id="pocF" class="col-md-12">
+                            <h:panelGroup class="side" a:data-side="1">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="col-md-9" style="padding:0;margin:0">
+                                        <h:outputLabel>Mostrar Desde</h:outputLabel>
+                                        </div>
+                                        <div class="col-md-3" style="padding:0;margin:0;text-align:right;font-size:20px;cursor:pointer;">
+                                            <i class="pe-7s-angle-right-circle" style="cursor:pointer;" onclick="popoverIcons(this);"/>
+                                        </div>
+                                        <div class="input-group date">
+                                            <h:inputText id="FI" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{etapasCVS.popOver.fechaInicioString}">
+                                                <f:ajax event="change" listener="#{etapasCVS.setPopoverFieldValue}"/>
+                                            </h:inputText>
+                                            <div class="input-group-addon">
+                                                <span class="pe-7s-date" style="font-size:25px;"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <h:outputLabel>Hasta</h:outputLabel>
+                                        <div class="input-group date">
+                                            <h:inputText id="FF" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{etapasCVS.popOver.fechaFinString}">
+                                                <f:ajax event="change" listener="#{etapasCVS.setPopoverFieldValue}"/>
+                                            </h:inputText>
+                                            <div class="input-group-addon">
+                                                <span class="pe-7s-date" style="font-size:25px;"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <h:outputLabel>Prioridad</h:outputLabel>
+                                        <h:selectOneMenu id="PR" styleClass="form-control" value="#{etapasCVS.popOver.prioridad}">
+                                            <f:selectItem itemValue="true" itemLabel="Alta"/>
+                                            <f:selectItem itemValue="false" itemLabel="Normal"/>
+                                            <f:ajax event="change" listener="#{etapasCVS.setPopoverFieldValue}"/>
+                                        </h:selectOneMenu>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row"  style="padding-bottom:0;">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <h:outputLabel>Descripción</h:outputLabel>
+                                        <h:inputTextarea class="form-control" a:placeholder="Descripción" value="#{etapasCVS.popOver.descripcion}">
+                                            <f:ajax event="change" listener="#{etapasCVS.setPopoverFieldValue}"/>
+                                        </h:inputTextarea>
+                                    </div>
+                                </div>
+                            </div>
+                            </h:panelGroup>
+                            <h:panelGroup id="side2" class="side" a:data-side="2" a:data-refreshed="#{1>etapasCVS.popOver.JUR_AlcanceLength}" style="display:none;">
+                                <h:commandButton id="refresh" style="display:none;">
+                                    <f:ajax render="pocF:side2" onevent="function(data){if(data.status==='success'){onTrashIconRefreshed();}}"/>
+                                </h:commandButton>
+                                <div class="row" style="padding-top:0;height:268px;display:block;overflow:hidden">
+                                    <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="header">
+                                            <div class="col-md-9" style="padding:0;margin:0">
+                                                <h:outputLabel>Alcance: </h:outputLabel>
+                                            </div>
+                                            <div class="col-md-3" style="padding:0;margin:0;text-align:right;font-size:20px;cursor:pointer;">
+                                                <i class="pe-7s-angle-left-circle" style="cursor:pointer;" onclick="popoverIcons(this);"/>
+                                            </div>
+                                        </div>
+                                        <h:panelGroup id="portalJA" class="content table-responsive table-full-width" style="padding:0;margin:0;">
+                                            <table id="pCotsT" class="table table-hover table-striped portal inPopover" style="overflow:hidden;width:100%;/*table-layout:fixed;*/" data-rows="#{a.JUR_EtapaDetalleLength}" data-sort="0_A">
+                                                <thead id="pHead" style="overflow:hidden;display:table;width:100%;table-layout:fixed;" data-trPopover="popOverContent_title='Programar Notificación'_data-placement='left'" data-trEvent="click_onDetalleClick($(this),false);">
+                                                    <th width="5%" style="padding-left:0;padding-top:0;text-align:center"></th>
+                                                    <th width="40%" style="padding-top:0;text-align:right;padding-right:0">Nombre</th>
+                                                    <th width="55%" style="padding-top:0;text-align:right;padding-right:0">Notas</th>
+                                                </thead>
+                                                <tbody id="pCots#{vs.index}" style="display:block;width:100%;height:229px;overflow:auto;">
+                                                    <ui:repeat var="r" value="#{etapasCVS.popOver.JUR_Alcance}" varStatus="vs3" rendered="#{etapasCVS.popOver.JUR_AlcanceLength>0}">
+                                                        <tr style="width:100%;">
+                                                            <td style="width:5%;text-align:center;padding-left:1px;padding-right:1px;">
+                                                                <h:selectBooleanCheckbox value="#{r.set}">
+                                                                    <f:ajax event="change" listener="#{etapasCVS.setPopoverFieldValue}"/>
+                                                                </h:selectBooleanCheckbox>
+                                                            </td>
+                                                            <td style="width:40%;padding-left:1px;padding-right:1px;">#{r.JUR_RecursoHumano.nombre+=' '+=r.JUR_RecursoHumano.apellidos}</td>
+                                                            <td style="width:55%;padding-left:1px;padding-right:1px;" data-inFieldStyle="padding-left:1px;padding-right:1px;">
+                                                                <h:inputTextarea class="form-control" value="#{r.notas}">
+                                                                    <f:ajax event="change" listener="#{etapasCVS.setPopoverFieldValue}"/>
+                                                                </h:inputTextarea>
+                                                            </td>
+                                                        </tr>
+                                                    </ui:repeat>
+                                                </tbody>
+                                            </table>
+                                        </h:panelGroup>
+                                    </div>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                            <div class="row" style="padding-top:0;">
+                                <h:panelGroup id="trashIcon" class="col-md-4" style="#{etapasCVS.popOver.id_JUR_Notificacion>0?'padding-top:0;text-align:center;font-size:20px;':'visibility:hidden;'}">
+                                    <i class="pe-7s-trash" style="cursor:pointer;" onclick="popoverIcons(this);"/>
+                                    <h:commandButton style="display:none;">
+                                        <f:ajax listener="#{etapasCVS.inPopoverActions(true)}" onevent="function(data){if(data.status==='success'){hidePopover();setOpenPopover($([]));}}"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <div class="col-md-4"  style="padding-top:0;text-align:center;font-size:20px;color:red">
+                                    <i class="pe-7s-close-circle" style="cursor:pointer;" onclick="popoverIcons(this);"/>
+                                </div>
+                                <div class="col-md-4"  style="padding-top:0;text-align:center;font-size:20px;color:green">
+                                    <i class="pe-7s-check" style="cursor:pointer;" onclick="popoverIcons(this);"/>
+                                    <h:commandButton style="display:none;">
+                                        <f:ajax listener="#{etapasCVS.inPopoverActions(false)}" onevent="function(data){if(data.status==='success'){hidePopover();setOpenPopover($([]));}}"/>
+                                    </h:commandButton>
+                                </div>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+            <h:outputStylesheet library="css" name="portalsCSS.css"/>
+            <h:outputStylesheet library="css" name="valuelists.css"/>
+            <h:outputStylesheet library="css" name="bootstrap-datepicker3.css"/>
+            <h:outputStylesheet library="css" name="accordions.css"/>
+            <h:outputScript library="js" name="NumberFields.js"/>
+            <h:outputScript library="js" name="valuelistcontrol.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.min.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.es.js"/>
+            <h:outputScript library="js" name="portalActions.js"/>
+            <h:outputScript library="js" name="accordions.js"/>
+            <h:outputScript library="js" name="popoverControls.js"/>
+            <h:outputScript library="js" name="doTimeout.js"/>
+            <script type="text/javascript">
+                $(function(){
+                    runJScode(false,true,true);
+                    initializeAccordion(true,false);
+                    $("#content").css("display","block");
+                    $('a:not(#deleteRecordBtn,#deleteRecord\\:Btn,.dropdown-toggle)').click(function(e){
+                        if($('#mainForm\\:mainFormBtnF.btn-fill').size()>0 || $(".modPR,.newPR").size()>0)
+                            return confirm("No ha guardado los cambios realizados ¿Desea salir sin guardar?");
+                        else return true;
+                    });
+                });
+                function reRunJScode()
+                {
+                    runJScode(true,true,true);
+                }
+                function actionforclick($t)
+                {
+                    var $pnl=$t.closest("li"),
+                        $prs=$pnl.siblings(":nth-of-type("+Number($pnl.index())+")").find(".col-md-10"),
+                        txt=$prs.text().split(") ");
+                    $prs.text(txt[0]+") "+$pnl.find("input[type=text]").first().val());
+                }
+                function onDetalleClick($t,loaded)
+                {
+                    if($t.is('tr'))
+                    {
+                        var $ts=$t.closest('table').siblings();
+                        if(loaded)
+                        {
+                            $ts=$ts.filter(function(){return $(this).is("input[type=hidden]");});
+                            var c=$ts.val();
+                            loadValuesIntoPopover(c.split("],"));//function from popoverControls.js
+                            $('.popover').find("span:last").attr("style",$("#popOverContent").children("form").find('span:last').attr("style"));
+                            delete $trClicked;
+                        }
+                        else
+                        {
+                            $trClicked=$t;
+                            $ts.filter(function(){return $(this).is("input[type=hidden]");}).val($t.parent()[0].id.replace("pCots","")+"_"+$t.data("row"));
+                            $ts.filter(function(){return this.id.indexOf("loadPopover")>-1;}).trigger("onclick");
+                        }
+                    }
+                    else onDetalleClick($trClicked,true);
+                }
+                function loadDatePickers($t,$c){
+                    var $dp=$($t),container;
+                    if($c!=null)
+                        container=$c;
+                    else
+                        container=$dp.length>0 ? $dp.parent() : "body";
+                    $dp.datepicker({
+                        language: 'es',
+                        format: 'dd/mm/yyyy',
+                        container: container,
+                        showOnFocus: true,
+                        todayHighlight: true,
+                        autoclose: true
+                    });
+                }
+                function initPopover($t)
+                {
+                    $t=$("#"+$t);
+                    var $rows=$t.find("tr[data-row!=-1]").not(".newPR,.modPR");
+                    if($rows.size()>0)
+                    {
+                        var $po=$("#popOverContent").children("form");
+                        $po.find("span").each(function(){
+                            this.id=this.id.replace($po[0].id,$po[0].id+"InPopover");
+                        });
+                        $po.attr("id",$po[0].id+"InPopover");
+                        var $defRows=$rows.filter(function(){ return 0==Number($(this).children(":first").data("id"));});
+                        $rows=$defRows.size()>0?$rows.not($defRows):$rows;
+                        $rows.each(function(){
+                            var $this=$(this);
+                            initializePopover($this,$po.parent());
+                            /*$this.on("shown.bs.popover",function(){
+                                //onDetalleClick($this,true);
+                                $this=$('.popover').find("span:last").attr("style",$po.find('span:last').attr("style"));
+                            });*/
+                        });
+                        setOpenPopover($([]));
+                        $po.find("span").each(function(){
+                            this.id=this.id.replace("InPopover","");
+                        });
+                        $po.attr("id",$po[0].id.replace("InPopover",""));
+                        if($._data(document,'events')['portalPopoverValidations']==null)
+                        {
+                            setPortalPopoverValidations($(".main-panel"),$t);
+                            $(document).click(function(){
+                                $eventTarget=$(event.target);
+                                $(document).trigger("portalPopoverValidations");
+                            });
+                        }
+                        $defRows.each(function(){
+                            $po=$(this);
+                            $rows=$po.data("row");
+                            editRow($po);
+                            $po=$t.children().filter(function(){return $(this).data("row")==$rows;}).children(":last").find("i");
+                            $rows=$po.eq(0).attr("onclick");
+                            $po.eq(0).attr("onclick","if($(this).closest('div.row').prev().find('input[type=submit]').eq(1).hasClass('btn-fill')){alert('Por favor guarde los cambios en la etapa');return false;}else "+$rows);
+                            $po.eq(1).attr("onclick","deleteFromPortal('¿Desea cancelar la creación automática de esta fila con notificación?');");
+                        });
+                    }
+                }
+                function popoverIcons($t)
+                {
+                    var c=$t.className;
+                    if(c.indexOf("trash")>-1)
+                    {
+                        if(confirm('¿Desea eliminar la notificación?'))
+                            $t.nextSibling.click();
+                    }
+                    else if(c.indexOf("close")>-1)
+                    {
+                        if(confirm('¿Desea cancelar los cambios en la notificación?'))
+                        {   
+                            restorePopoverBackUpValues();
+                            hidePopover();
+                            setOpenPopover($([]));
+                        }
+                    }
+                    else if(c.indexOf("check")>-1)
+                    {
+                        if(confirm('¿Desea guardar la notificación?'))
+                        {
+                            /*c=$("#pocF").find(".form-control");
+                            $($t).closest("form").find(".form-control").each(function(index){
+                                c.eq(index)[0].value=this.value;
+                            });*/
+                            $t.nextSibling.click();
+                        }
+                    }
+                    else if(c.indexOf("angle")>-1)
+                    {
+                        $t=$($t).closest(".side");
+                        var $t2=$t.siblings('span').filter(function(){return this.id.indexOf("side2")>-1;});
+                        if($t2.size()>0)
+                        {
+                            if($t2.data("refreshed")==false)
+                                $t2.find("input[type=submit]").filter(function(){return this.id.indexOf("refresh")>-1}).click();
+                            else showHiddePopoverSides($t,$t2);
+                        }
+                        else showHiddePopoverSides($t);
+                    }
+                }
+                function showHiddePopoverSides($s1,$s2)
+                {
+                    var c=$s1.css("display");
+                    $s1.css("display","none");
+                    if($s2==null)
+                        $s2=$s1.siblings("span");
+                    $s2.css("display",c);
+                }
+                function onTrashIconRefreshed()
+                {
+                    var $s=$('#pocF\\:side2'),
+                        $t=$('#pocFInPopover\\:side2').find('#pCotsT');
+                        $t.children().remove();
+                        $t.append($s.find('#pCotsT').children().clone());
+                        $t=$('#pocFInPopover\\:side2');
+                        $t.data('refreshed',true);
+                        $s=getBackUpValues().buv;
+                        $t.find(".form-control,input[type=checkbox]").each(function(){
+                            if(this.type==='checkbox')
+                                $s.push(this.checked);
+                            else
+                                $s.push(this.value);
+                        });
+                        setBackUpValues($s);
+                        showHiddePopoverSides($t.siblings('span').eq(0),$t);
+                }
+                function deletionAlert()
+                {
+                    return confirm('¿Desea eliminar el material actual?');
+                }
+                function fromAction(p,id)
+                {
+                    if(p)
+                        document.getElementById(id.substring(0,id.length-1)).click();
+                }
+                function onClikVL(data,n,current)
+                {
+                    if(data.status==='success')
+                    {
+                        if(n===0)
+                            document.getElementById(current).click();
+                        else
+                            afterAjaxSelect("mainForm\\:"+current,n); 
+                    }
+                }
+                function reRunJSCode(d){
+                    if(d.status==='success')
+                    {
+                        runJScode(true,false,true);
+                        loadDatePickers();
+                    }
+                }
+            </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+    
+</html>

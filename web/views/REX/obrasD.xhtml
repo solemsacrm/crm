@@ -1,0 +1,383 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <h:body>
+        <ui:composition template="./../../WEB-INF/templates/REX_SideBarTemplate.xhtml">
+            
+            <ui:define name="content">
+                <div class="content" id="content" style="display:none;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">
+                                        Editar Obra
+                                    </h4>
+                                <!--<p class="category">Listado</p>-->
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm">
+                                        <h:inputHidden id="idHidden" value="#{obrasCRS.rowID}"/>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <h:outputLabel>ID</h:outputLabel>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" value="#{obrasCVS.model.id_REX_Obra}" rendered="#{obrasCVS.model.id_REX_Obra!=0}"/>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" rendered="#{obrasCVS.model.id_REX_Obra==0}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Nombre</h:outputLabel>
+                                                    <h:inputText id="NM" styleClass="form-control" a:placeholder="Nombre" value="#{obrasCVS.model.nombre}">
+                                                        <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Cliente</h:outputLabel>  
+                                                    <h:selectOneMenu id="IC" a:size="#{obrasCVS.clientes.display}" value="#{obrasCVS.model.get_Cliente().id_Clientes}">
+                                                        <f:selectItem itemLabel="#{obrasCVS.model.get_Cliente().nombre}" itemValue="#{obrasCVS.model.get_Cliente().id_Clientes}" itemDisabled="#{obrasCVS.clientes.length>0}"/>
+                                                        <f:selectItems value="#{obrasCVS.clientes.list}" var="c" itemValue="#{c.id}" itemLabel="#{c.label}"/>
+                                                        <f:ajax event="focus" render="IC" listener="#{obrasCVS.loadClientesList}" onevent="function(data){onClikVL(data,1,'IC');}" disabled="#{obrasCVS.clientes.length>0}"/>
+                                                        <f:ajax event="focus" render="@none" onevent="function(data){onClikVL(data,0,'SS1');}" disabled="#{obrasCVS.clientes.length lt 1}"/>
+                                                        <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Fecha Inicio</h:outputLabel>
+                                                    <div class="input-group date">
+                                                        <h:inputText id="FI" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{obrasCVS.fechaInicio}">
+                                                            <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                        </h:inputText>
+                                                        <div class="input-group-addon">
+                                                            <span class="pe-7s-date" style="font-size:25px;"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Fecha Término</h:outputLabel>
+                                                    <div class="input-group date">
+                                                        <h:inputText id="FF" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{obrasCVS.fechaFin}">
+                                                            <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                        </h:inputText>
+                                                        <div class="input-group-addon">
+                                                            <span class="pe-7s-date" style="font-size:25px;"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <h:outputLabel>Descripción</h:outputLabel>
+                                                            <h:inputTextarea id="NT" rows="18" styleClass="form-control" a:placeholder="Descripción de la obra" value="#{obrasCVS.model.descripcion}" style="height: 287.5pt;">
+                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                            </h:inputTextarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <div class="form-group">
+                                                            <h:outputLabel>Precio</h:outputLabel>
+                                                            <h:inputText id="PR" styleClass="form-control number" a:placeholder="Precio" value="#{obrasCVS.model.monto}" style="text-align:right;" onfocus="onNumberFieldFocus('mainForm:PR')" onblur="onNumberFieldBlur('mainForm:PR','$','f',2)">
+                                                                <f:convertNumber maxFractionDigits="2"/>
+                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                            </h:inputText>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <h:outputLabel>Moneda</h:outputLabel>
+                                                            <h:inputText id="MO" styleClass="form-control" a:placeholder="Moneda" value="#{obrasCVS.model.moneda}">
+                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                            </h:inputText>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <h:outputLabel>Dirección</h:outputLabel>
+                                                            <h:inputText id="D1" styleClass="form-control" a:placeholder="Dirección" value="#{obrasCVS.model.direccion1}">
+                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                            </h:inputText>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <h:inputText id="D2" styleClass="form-control" value="#{obrasCVS.model.direccion2}">
+                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                            </h:inputText>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <h:outputLabel>Ciudad</h:outputLabel>
+                                                            <h:inputText id="CI" styleClass="form-control" a:placeholder="Ciudad" value="#{obrasCVS.model.ciudad}">
+                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                            </h:inputText>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <h:outputLabel>Estado</h:outputLabel>
+                                                            <h:inputText id="ES" styleClass="form-control" a:placeholder="Estado" value="#{obrasCVS.model.estado}">
+                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                            </h:inputText>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <h:outputLabel>País</h:outputLabel>
+                                                            <h:inputText id="PA" styleClass="form-control" a:placeholder="País" value="#{obrasCVS.model.pais}">
+                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                            </h:inputText>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <h:outputLabel>Código Postal</h:outputLabel>
+                                                            <h:inputText id="CP" styleClass="form-control" a:placeholder="CP" value="#{obrasCVS.model.codigoPostal}">
+                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                            </h:inputText>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                                        
+                                            <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;">
+                                                <f:ajax listener="#{obrasCVS.updateFormServicios}" render="mainForm mainForm2 mainForm3" onevent="reRunJSCode"/>
+                                            </h:commandButton>
+                                            <h:commandButton id="mainFormBtnF" class="#{obrasCVS.cambios?'btn btn-success btn-fill pull-right':'btn btn-success pull-right'}" value="Guardar Cambios" onclick="fromAction(#{obrasCVS.cambios});return false;"/>
+                                            <div class="clearfix"/>
+                                        </h:form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">Estatus de la Obra</h4>
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm2">
+                                        <h:inputHidden id="idHidden2" value="#{obrasCRS.rowID}"/>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel value="La obra está:"/>
+                                                    <h:selectOneMenu id="ET" styleClass="form-control" value="#{obrasCVS.model.estatus}">
+                                                        <f:selectItem itemValue="1" itemLabel="Pendiente"/>
+                                                        <f:selectItem itemValue="2" itemLabel="Activa"/>
+                                                        <f:selectItem itemValue="3" itemLabel="Detenida"/>
+                                                        <f:selectItem itemValue="4" itemLabel="Cancelada"/>
+                                                        <f:selectItem itemValue="5" itemLabel="Finalizada"/>
+                                                        <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </h:form>
+                                    <h:form id="mainForm3">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel value="Avance general:"/>
+                                                    <h:panelGroup id="pgBar">
+                                                    <div class="progress">
+                                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="#{obrasCVS.getAvanceGeneral(1)}" aria-valuemin="0" aria-valuemax="100" style="width:#{obrasCVS.getAvanceGeneral(1)}%">#{obrasCVS.getAvanceGeneral(1)}%</div>
+                                                    </div>
+                                                    <div class="row" style="#{obrasCVS.model.estatus!=2?'display:none':''}">
+                                                        <div class="col-md-10">
+                                                            <h:outputLabel value="Etapa Actual:"/>
+                                                        </div>
+                                                        <div class="col-md-2" style="text-align: right">
+                                                            <i class="pe-7s-plus accordion" style="font-size:20px;cursor:pointer;" onclick="$(this).next().click();"/>
+                                                            <h:commandButton id="addToAccordionBtn" style="display:none">
+                                                                <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.addAccordionNode}" onevent="reRunJSCode"/>
+                                                            </h:commandButton>
+                                                        </div>
+                                                    </div>
+                                                    </h:panelGroup>
+                                                    <ul id="accordionUL" class="nav nav-pills nav-stacked">
+                                                        <ui:repeat var="a" value="#{obrasCVS.model.REX_Avances}" varStatus="vs" rendered="#{obrasCVS.model.estatus==2}">
+                                                            <li role="presentation" class="accordion" style="#{1>vs.index?'display:none':''}">
+                                                                <div class="row">
+                                                                    <div class="col-md-10 accText">
+                                                                        #{a.etapa}
+                                                                    </div>
+                                                                    <div class="col-md-2" style="text-align:right">
+                                                                        <i class="pe-7s-trash accordion" style="font-size:20px;" onclick="$(this).next().click();"/>
+                                                                        <h:commandButton id="rmvFromAccordionTabBtn" style="display:none" a:data-index="#{vs.index}">
+                                                                            <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.rmvAccordionNode}" onevent="reRunJSCode"/>
+                                                                        </h:commandButton>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="#{1>vs.index?'':'accPanel'}">
+                                                                 <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group">
+                                                                            <h:inputText id="EA" a:data-index="#{vs.index}" styleClass="form-control" a:placeholder="Etapa" value="#{a.etapa}">
+                                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                                            </h:inputText>
+                                                                        </div>
+                                                                    </div>
+                                                                 </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-8">
+                                                                        <div class="form-group">
+                                                                            <h:outputLabel>Fecha</h:outputLabel>
+                                                                            <div class="input-group date">
+                                                                                <h:inputText id="FA" a:data-index="#{vs.index}" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{a.fechaString}">
+                                                                                    <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                                                </h:inputText>
+                                                                                <div class="input-group-addon">
+                                                                                    <span class="pe-7s-date" style="font-size:25px;"/>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <h:outputLabel>Porcentaje</h:outputLabel>
+                                                                            <h:inputText id="PJ" a:data-index="#{vs.index}" styleClass="form-control number" a:placeholder="Avance" value="#{a.porcentaje}" onfocus="onNumberFieldFocus(this.id)" onblur="onNumberFieldBlur(this.id,'%','l',2)">
+                                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm3:pgBar mainForm:mainFormBtnF"/>
+                                                                            </h:inputText>
+                                                                        </div>
+                                                                    </div>
+                                                                 </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group">
+                                                                            <h:outputLabel>Descripción</h:outputLabel>
+                                                                            <h:inputTextarea a:data-index="#{vs.index}" id="DA" styleClass="form-control" a:placeholder="Descripción" a:rows="4" value="#{a.descripcion}">
+                                                                                <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                                            </h:inputTextarea>
+                                                                        </div>
+                                                                    </div>
+                                                                 </div>
+                                                                <div class="row" style="padding:0;margin:0">
+                                                                <div class="col-md-12" style="text-align:right;padding:0;margin:0">
+                                                                    <i class="pe-7s-trash accordion" style="font-size:20px;cursor:pointer;display:#{1>vs.index?'':'none'}" onclick="$(this).next().click();"/>
+                                                                    <h:commandButton id="rmvFromAccordionBtn" style="display:none" a:data-index="#{vs.index}">
+                                                                        <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.rmvAccordionNode}" onevent="reRunJSCode"/>
+                                                                    </h:commandButton>
+                                                                </div>
+                                                                </div>
+                                                            </li>
+                                                        </ui:repeat>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            <div class="clearfix"/>
+                                    </h:form>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <h:form id="deleteRecord" style="display:none;"><h:commandLink id="Btn" onclick="return deletionAlert()" action="#{obrasCVS.deleteREX_Obra()}">
+                        <i class="pe-7s-trash"/>
+                    </h:commandLink></h:form>
+                </div>
+            </div>
+            <h:outputStylesheet library="css" name="valuelists.css"/>
+            <h:outputStylesheet library="css" name="accordions.css"/>
+            <h:outputStylesheet library="css" name="bootstrap-datepicker3.css"/>
+            <h:outputScript library="js" name="NumberFields.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.min.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.es.js"/>
+            <h:outputScript library="js" name="valuelistcontrol.js"/>
+            <h:outputScript library="js" name="accordions.js"/>
+            <script type="text/javascript">
+                $(function(){
+                    runJScode(false,true,true);
+                    loadDatePickers();
+                    $("#content").css("display","block");
+                    $('a:not(#deleteRecordBtn,#deleteRecord\\:Btn)').click(function(e){
+                        if($('#mainForm\\:mainFormBtnF.btn-fill').size()>0)
+                            return confirm("No ha guardado los cambios realizados ¿Desea salir sin guardar?");
+                        else return true;
+                    });
+                });
+                function deletionAlert()
+                {
+                    return confirm('¿Desea eliminar la obra actual?');
+                }
+                function fromAction(p)
+                {
+                    if(p)
+                        document.getElementById('mainForm:mainFormBtn').click();
+                }
+                function onClikVL(data,n,current)
+                {
+                    if(data.status==='success')
+                    {
+                        if(n===0)
+                            document.getElementById(current).click();
+                        else
+                            afterAjaxSelect("mainForm\\:"+current,n); 
+                    }
+                }
+                function loadDatePickers(){
+                    $('.date').each(function(){
+                        var $dp=$(this);
+                        var container=$dp.length>0 ? $dp.closest(".card") : "body";
+                        $dp.datepicker({
+                            language: 'es',
+                            format: 'dd/mm/yyyy',
+                            container: container,
+                            showOnFocus: true,
+                            todayHighlight: true,
+                            autoclose: true
+                        });
+                    });
+                }
+                function reRunJSCode(data){
+                    if(data.status==='success')
+                    {
+                        loadDatePickers();
+                        $(".number").each(function(){
+                            $(this).focus();
+                            $(this).blur();
+                        });
+                        initializeAccordion();
+                    }
+                }
+            </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+    
+</html>

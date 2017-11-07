@@ -1,0 +1,339 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <f:metadata>
+        <f:viewAction action="#{loginBean.setHideHeaderRecordControls(false)}"/>
+    </f:metadata>
+    
+    <h:body>
+        
+        <ui:composition template="./../../WEB-INF/templates/JUR_SideBarTemplate.xhtml">
+            
+            <ui:define name="content">
+                <div class="content" id="content" style="display:none;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">
+                                        Editar Tarea
+                                    </h4>
+                                <!--<p class="category">Listado</p>-->
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm">
+                                        <h:inputHidden id="idHidden" value="#{tareasCRS.rowID}"/>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <h:outputLabel>ID</h:outputLabel>
+                                                    <h:inputText id="modelID" styleClass="form-control" a:placeholder="ID" disabled="true" value="#{tareasCVS.model.id_JUR_Tarea}" rendered="#{tareasCVS.model.id_JUR_Tarea!=0}"/>
+                                                    <h:inputText styleClass="form-control" a:placeholder="ID" disabled="true" rendered="#{tareasCVS.model.id_JUR_Tarea==0}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Fecha de Asignación</h:outputLabel>
+                                                    <div class="input-group date">
+                                                        <h:inputText disabled="#{(tareasCVS.model.id_JUR_Tarea>0 and tareasCVS.model.fechaAsignacion!=null) or !loginBean.usuario.gerente}" id="FA" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{tareasCVS.model.fechaAsignacionString}">
+                                                            <f:ajax event="change" listener="#{tareasCVS.checkForChanges}" render="mainForm:mainFormBtnF" disabled="#{(tareasCVS.model.id_JUR_Tarea>0 and tareasCVS.model.fechaAsignacion!=null) or !loginBean.usuario.gerente}"/>
+                                                        </h:inputText>
+                                                        <div class="input-group-addon">
+                                                            <span class="pe-7s-date" style="font-size:25px;"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Fecha de Entrega</h:outputLabel>
+                                                    <div class="input-group date">
+                                                        <h:inputText disabled="#{!loginBean.usuario.gerente}" id="FE" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{tareasCVS.model.fechaEntregaString}">
+                                                            <f:ajax event="change" listener="#{tareasCVS.checkForChanges}" render="mainForm:mainFormBtnF" disabled="#{!loginBean.usuario.gerente}"/>
+                                                        </h:inputText>
+                                                        <div class="input-group-addon">
+                                                            <span class="pe-7s-date" style="font-size:25px;"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Asunto</h:outputLabel>
+                                                    <h:inputText disabled="#{!loginBean.usuario.gerente}" id="AS" styleClass="form-control" a:placeholder="Asunto" value="#{tareasCVS.model.asunto}">
+                                                        <f:ajax event="change" listener="#{tareasCVS.checkForChanges}" render="mainForm:mainFormBtnF" disabled="#{!loginBean.usuario.gerente}"/>
+                                                    </h:inputText>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Descripción</h:outputLabel>  
+                                                    <h:inputTextarea readonly="#{!loginBean.usuario.gerente}" id="DE" styleClass="form-control" a:placeholder="Descripción" a:rows="5" value="#{tareasCVS.model.descripcion}" style="overflow:auto;">
+                                                        <f:ajax event="change" listener="#{tareasCVS.checkForChanges}" render="mainForm:mainFormBtnF" disabled="#{!loginBean.usuario.gerente}"/>
+                                                    </h:inputTextarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Notas</h:outputLabel>
+                                                    <h:inputTextarea readonly="#{loginBean.usuario.gerente}" id="NO" styleClass="form-control" a:placeholder="Notas" style="overflow:auto;" a:rows="6" value="#{tareasCVS.model.notas}">
+                                                        <f:ajax event="change" listener="#{tareasCVS.checkForChanges}" render="mainForm:mainFormBtnF" disabled="#{loginBean.usuario.gerente}"/>
+                                                    </h:inputTextarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;">
+                                            <f:ajax listener="#{tareasCVS.updateFormServicios}" render="mainForm mainForm2 formu" onevent="reRunJSCode"/>
+                                        </h:commandButton>
+                                        <h:commandButton id="mainFormBtnF" class="#{tareasCVS.cambios?'btn btn-success btn-fill pull-right':'btn btn-success pull-right'}" value="Guardar Cambios" onclick="fromAction(#{tareasCVS.cambios});return false;"/>
+                                        <div class="clearfix"/>
+                                    </h:form>
+                                </div>
+                            </div>
+                        </div>
+                            
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">
+                                        Información
+                                    </h4>
+                                </div>
+                                <div class="content">
+                                    <h:form id="mainForm2">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel value="Estatus"/>
+                                                    <h:selectOneMenu id="ES" styleClass="form-control" value="#{tareasCVS.model.finalizado}">
+                                                        <f:selectItem itemValue="false" itemLabel="Pendiente"/>
+                                                        <f:selectItem itemValue="true" itemLabel="Finalizado"/>
+                                                        <f:ajax event="change" listener="#{tareasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Cliente</h:outputLabel>
+                                                    <h:inputText disabled="true" id="CL" styleClass="form-control" a:placeholder="Caso" value="#{tareasCVS.model.JUR_Caso.cliente.nombre}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Caso</h:outputLabel>
+                                                    <h:inputText disabled="true" id="CA2" styleClass="form-control" a:placeholder="Caso" value="#{tareasCVS.model.getJUR_Caso().nombre}" rendered="#{!loginBean.usuario.gerente}"/>
+                                                    <h:selectOneMenu id="CA" a:size="#{tareasCVS.casos.display}" a:data-skipAjaxLoad="true" value="#{tareasCVS.model.getJUR_Caso().id_JUR_Caso}" rendered="#{loginBean.usuario.gerente}">
+                                                        <f:selectItem itemLabel="#{tareasCVS.model.getJUR_Caso().nombre}" itemValue="#{tareasCVS.model.getJUR_Caso().id_JUR_Caso}" itemDisabled="#{tareasCVS.casos.length>0}"/>
+                                                        <f:selectItems value="#{tareasCVS.casos.list}" var="c" itemValue="#{c.id}" itemLabel="#{c.label}"/>
+                                                        <f:ajax event="focus" render="CA" listener="#{tareasCVS.loadCasosList}" onevent="function(data){onClikVL(data,1,'CA');}" disabled="#{tareasCVS.casos.length>0}"/>
+                                                        <f:ajax event="focus" render="@none" onevent="function(data){onClikVL(data,0,'SS1');}" disabled="#{tareasCVS.casos.length lt 1}"/>
+                                                        <f:ajax event="change" listener="#{tareasCVS.checkForChanges}" render="CL ET mainForm:mainFormBtnF" onevent="onCasoChange"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <h:outputLabel>Etapa</h:outputLabel>
+                                                    <h:inputText disabled="true" id="ET2" styleClass="form-control" a:placeholder="Etapa" value="#{tareasCVS.model.getJUR_Etapa().nombre}" rendered="#{!loginBean.usuario.gerente}"/>
+                                                    <h:selectOneMenu id="ET" a:size="#{tareasCVS.etapas.display}" a:data-skipAjaxLoad="true" value="#{tareasCVS.model.getJUR_Etapa().id_JUR_Etapa}" rendered="#{loginBean.usuario.gerente}">
+                                                        <f:selectItem itemLabel="#{tareasCVS.model.getJUR_Etapa().nombre}" itemValue="#{tareasCVS.model.getJUR_Etapa().id_JUR_Etapa}" itemDisabled="#{tareasCVS.etapas.length>0}"/>
+                                                        <f:selectItems value="#{tareasCVS.etapas.list}" var="d" itemValue="#{d.id}" itemLabel="#{d.label}"/>
+                                                        <f:ajax event="focus" render="#{tareasCVS.model.getJUR_Caso().id_JUR_Caso>0?'ET':'@none'}" listener="#{tareasCVS.loadEtapasList}" onevent="onEtapaFocus" disabled="#{tareasCVS.etapas.length>0}"/>
+                                                        <f:ajax event="focus" render="@none" onevent="function(data){onClikVL(data,0,'SS2');}" disabled="#{tareasCVS.etapas.length lt 1}"/>
+                                                        <f:ajax event="change" listener="#{tareasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h:panelGroup class="form-group" rendered="#{loginBean.usuario.gerente}">
+                                                    <h:outputLabel>Encargado</h:outputLabel>
+                                                    <h:selectOneMenu id="RH" a:size="#{tareasCVS.RHs.display}" a:data-skipAjaxLoad="true" value="#{tareasCVS.model.getJUR_RecursoHumano().id_JUR_RecursoHumano}">
+                                                        <f:selectItem itemLabel="#{tareasCVS.RHnombre}" itemValue="#{tareasCVS.model.getJUR_RecursoHumano().id_JUR_RecursoHumano}" itemDisabled="#{tareasCVS.RHs.length>0}"/>
+                                                        <f:selectItems value="#{tareasCVS.RHs.list}" var="c" itemValue="#{c.id}" itemLabel="#{c.label}"/>
+                                                        <f:ajax event="focus" render="RH" listener="#{tareasCVS.loadRHsList}" onevent="function(data){onClikVL(data,3,'RH');}" disabled="#{tareasCVS.RHs.length>0}"/>
+                                                        <f:ajax event="focus" render="@none" onevent="function(data){onClikVL(data,0,'SS3');}" disabled="#{tareasCVS.RHs.length lt 1}"/>
+                                                        <f:ajax event="change" listener="#{tareasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                    </h:selectOneMenu>
+                                                </h:panelGroup>
+                                            </div>
+                                        </div>
+                                    </h:form>
+                                    <div class="clearfix"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h:form id="deleteRecord" style="display:none;">
+                        <h:commandLink id="Btn" onclick="return deletionAlert()" action="#{tareasCVS.deleteJUR_Tareas()}">
+                            <i class="pe-7s-trash"/>
+                        </h:commandLink>
+                    </h:form>
+                </div>
+            </div>
+            <h:outputStylesheet library="css" name="portalsCSS.css"/>
+            <h:outputStylesheet library="css" name="valuelists.css"/>
+            <h:outputStylesheet library="css" name="bootstrap-datepicker3.css"/>
+            <h:outputScript library="js" name="NumberFields.js"/>
+            <h:outputScript library="js" name="valuelistcontrol.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.min.js"/>
+            <h:outputScript library="js" name="bootstrap-datepicker.es.js"/>
+            <h:outputScript library="js" name="portalActions.js"/>
+            <script type="text/javascript">
+                //var skip=false;
+                $(function(){
+                    runJScode(false,true,false);
+                    loadDatePickers();
+                    $("#content").css("display","block");
+                    $('a:not(#deleteRecordBtn,#deleteRecord\\:Btn,.dropdown-toggle)').click(function(e){
+                        if($('#mainForm\\:mainFormBtnF.btn-fill').size()>0 || $(".modPR,.newPR").size()>0)
+                            return confirm("No ha guardado los cambios realizados ¿Desea salir sin guardar?");
+                        else return true;
+                    });
+                    $("table").prev().children("select").click(function(event)
+                    {
+                        event.preventDefault();
+                        this.blur();
+                        event.stopPropagation();
+                    });
+                });
+                function loadDatePickers(){
+                    $('.date').each(function(){
+                        var $dp=$(this);
+                        if(!$dp.find("input[type=text]")[0].disabled)
+                        {
+                            var container=$dp.length>0 ? $dp.closest(".card") : "body";
+                            $dp.datepicker({
+                                language: 'es',
+                                format: 'dd/mm/yyyy',
+                                container: container,
+                                showOnFocus: true,
+                                todayHighlight: true,
+                                autoclose: true
+                            });
+                        }
+                    });
+                }
+                function deletionAlert()
+                {
+                    return confirm('¿Desea eliminar el material actual?');
+                }
+                function fromAction(p)
+                {
+                    if(p)
+                    {
+                        if(1>$("#mainForm2\\:RH").children().filter(":selected").val())
+                            alert('Por favor seleccione un encargado.');
+                        else document.getElementById('mainForm:mainFormBtn').click();
+                    }
+                }
+                function onClikVL(data,n,current)
+                {
+                    if(data.status==='begin')
+                    {
+                        if(n===2)
+                        {
+                            current=$("#mainForm2\\:ET");
+                            n=current.next();
+                            if(n.data("txt")==null)
+                                n.data("txt",current.children().text());
+                        }
+                    }
+                    else if(data.status==='success')
+                    {
+                        if(n===0)
+                            document.getElementById(current).click();
+                        else if(n===2)
+                        {
+                            current=$("#SS2");
+                            var txt=current.data("txt");
+                            afterAjaxSelect("mainForm2\\:ET",n);
+                            n=$("#SS2");
+                            n.text(txt);
+                        }
+                        else afterAjaxSelect("mainForm2\\:"+current,n);
+                    }
+                }
+                function reRunJSCode(d)
+                {
+                    if(d.status==='success')
+                    {
+                        runJScode(true,false,false);
+                        loadDatePickers();
+                        onCasoChange(d);
+                    }
+                }
+                function goToExpediente()
+                {
+                    if($("#mainForm\\:mainFormBtnF").hasClass("btn-fill"))
+                    {
+                        alert('Por favor guarde los cambios.');
+                        return false;
+                    }
+                    else
+                    {
+                        var $target=$(event.target).next();
+                        $target.val($("#mainForm\\:modelID").val());
+                        return true;
+                    }
+                }
+                function onCasoChange(data)
+                {
+                    if(data.status==='success')
+                    {
+                        data=$('#SS2');
+                        var $s=$(data[0].previousSibling);
+                        data.text($s.text());
+                        data.off();
+                        data.click(function(){
+                            $s.focus();
+                        });
+                    }
+                }
+                function onEtapaFocus(data)
+                {
+                    if(data.status==='success')
+                    {
+                        if(1>$('#mainForm2\\:CA').val())
+                        {
+                            data=$('#SS2');
+                            var $s=$(data[0].previousSibling);
+                            $s.blur();
+                            alert('Por favor escoja un caso');
+                            data.off("click");
+                            data.click(function(){
+                                $s.focus();
+                            });
+                        }
+                        else onClikVL(data,2,'ET');
+                    }
+                }
+            </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+    
+</html>

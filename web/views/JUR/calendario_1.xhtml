@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <f:metadata>
+        <f:viewAction action="#{loginBean.setHideHeaderRecordControls(true)}"/>
+        <f:viewAction action="#{loginBean.setActiveModule(6,10,'calendario')}"/>
+    </f:metadata>
+
+    <h:body>
+
+        <ui:composition template="./../../WEB-INF/templates/JUR_SideBarTemplate.xhtml">
+            
+            <ui:define name="content">
+            <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <h:form id="formu" style="display:none;">
+                        <h:inputText id="idHidden" value="#{tareasCRS.rowID}"/>
+                        <h:commandLink id="rowAction" action="#{tareasCRS.goToDetail()}">
+                            <f:param name="fromModule" value="tareas" />
+                        </h:commandLink>
+                        <h:commandButton id="refreshTb" action="#{tareasCRS.rmvRecord}"/>
+                    </h:form>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">
+                                    Tareas
+                                </h4>
+                            </div>
+                            <div class="content table-responsive table-full-width">
+                                <table class="table table-hover table-striped calendar">
+                                    <thead>
+                                        <th>DOMINGO</th>
+                                        <th>LUNES</th>
+                                    	<th>MARTES</th>
+                                    	<th>MIÉRCOLES</th>
+                                        <th>JUEVES</th>
+                                        <th>VIERNES</th>
+                                        <th>SÁBADO</th>
+                                    </thead>
+                                    <tbody>
+                                        <ui:repeat var="m" value="#{tareasCRS.lista}">
+                                            <tr onclick="return getRow(#{m.id_JUR_Tarea})">
+                                            <td>#{m.JUR_Caso.nombre}</td>
+                                            <td>#{m.JUR_Caso.cliente.nombre}</td>
+                                            <td>#{m.fechaAsignacionString}</td>
+                                            <td>#{m.fechaEntregaString}</td>
+                                            <td>#{m.finalizado?'Finalizado':'Pendiente'}</td>
+                                            <td></td>
+                                            <td>
+                                                <center><h:form id="rTb" rendered="#{loginBean.getUsuario().gerente}">
+                                                    <h:commandLink id="Btn" class="rTb" onclick="deleteRow(#{m.id_JUR_Tarea});return false;">
+                                                        <i class="pe-7s-trash" style="font-size: 18px;"/>
+                                                    </h:commandLink>
+                                                </h:form></center>
+                                            </td>
+                                            </tr>
+                                        </ui:repeat>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+                <h:outputStylesheet>
+                    table.calendar > thead th
+                    {
+                        text-align:center;
+                        width:150px;
+                    }
+                    table.calendar > tbody > tr > td
+                    {
+                        width:150px;
+                        height:150px;
+                        border-right-style: solid;
+                        border-right-color:lightgrey;
+                        border-right-width:1px;
+                    }
+                    table.calendar > tbody > tr > td:last-of-type
+                    {
+                        border-right-style:none;
+                    }
+                </h:outputStylesheet>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+    
+</html>
