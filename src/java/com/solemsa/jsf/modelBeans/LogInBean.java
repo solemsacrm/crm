@@ -304,7 +304,7 @@ public class LogInBean implements Serializable{
             switch(FacesContext.getCurrentInstance().getViewRoot().getViewId().split("views/")[1].substring(0,3))
             {
                 case "VEN": flag=usuario.getArea()!=6;break;
-                case "REX": flag=usuario.getArea()!=5&&usuario.getRex()<1;break;
+                case "AGR": flag=usuario.getArea()!=5&&usuario.getRex()<1;break;
                 case "SEG": flag=usuario.getArea()!=4;break;
                 case "CNT": flag=usuario.getArea()!=3;break;
                 case "JUR": flag=usuario.getArea()!=2&&usuario.getJur()<1;break;
@@ -340,7 +340,7 @@ public class LogInBean implements Serializable{
             switch(p)
             {
                 case "VEN": flag=usuario.getArea()!=6;break;
-                case "REX": flag=usuario.getArea()!=5;break;
+                case "AGR": flag=usuario.getArea()!=5;break;
                 case "SEG": flag=usuario.getArea()!=4;break;
                 case "CNT": flag=usuario.getArea()!=3;break;
                 case "JUR": flag=usuario.getArea()!=2;break;
