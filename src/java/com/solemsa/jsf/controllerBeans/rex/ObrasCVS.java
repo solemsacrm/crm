@@ -156,8 +156,8 @@ public class ObrasCVS implements Serializable{
             avN=model.getREX_Avances().size();
             av=new boolean[avN];
             setAvancesFechaString();
-            FechaInicio=model.getFechaInicio()==null?"":ca.stringToDate(model.getFechaInicio().toString(),"-").toString();
-            FechaFin=model.getFechaFin()==null?"":ca.stringToDate(model.getFechaFin().toString(),"-").toString();
+            FechaInicio=model.getFechaInicio()==null?"":ca.parseDate(model.getFechaInicio().toString(),"-");
+            FechaFin=model.getFechaFin()==null?"":ca.parseDate(model.getFechaFin().toString(),"-");
         }
     }
     

@@ -191,7 +191,7 @@ public class ProveedoresCVS implements Serializable{
             ro.setREX_Material(new REX_Materiales());
             ro.getREX_Material().setId_REX_Material(Long.parseLong(arr[2]));
             ro.setREX_Proveedor(model);
-            ro.setPrecio(arr[3].isEmpty()?0:Float.parseFloat(arr[4]));
+            ro.setPrecio(arr[3].isEmpty()?0:Float.parseFloat(arr[3]));
             ro.setMoneda(arr[4]);
             String u=logInBean.getUsuario().getUsername();
             ro.setZz_UsuarioCreacion(u);

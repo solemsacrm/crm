@@ -222,22 +222,22 @@
                                                             <h:outputLabel value="Etapa Actual:"/>
                                                         </div>
                                                         <div class="col-md-2" style="text-align: right">
-                                                            <i class="pe-7s-plus accordion" style="font-size:20px;cursor:pointer;" onclick="$(this).next().click();"/>
+                                                            <i class="pe-7s-plus accordionElement" style="font-size:20px;cursor:pointer;" onclick="$(this).next().click();"/>
                                                             <h:commandButton id="addToAccordionBtn" style="display:none">
                                                                 <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.addAccordionNode}" onevent="reRunJSCode"/>
                                                             </h:commandButton>
                                                         </div>
                                                     </div>
                                                     </h:panelGroup>
-                                                    <ul id="accordionUL" class="nav nav-pills nav-stacked">
+                                                    <ul id="accordionUL" class="nav nav-pills nav-stacked accordion">
                                                         <ui:repeat var="a" value="#{obrasCVS.model.REX_Avances}" varStatus="vs" rendered="#{obrasCVS.model.estatus==2}">
-                                                            <li role="presentation" class="accordion" style="#{1>vs.index?'display:none':''}">
+                                                            <li role="presentation" class="accordionElement" style="#{1>vs.index?'display:none':''}">
                                                                 <div class="row">
                                                                     <div class="col-md-10 accText">
                                                                         #{a.etapa}
                                                                     </div>
                                                                     <div class="col-md-2" style="text-align:right">
-                                                                        <i class="pe-7s-trash accordion" style="font-size:20px;" onclick="$(this).next().click();"/>
+                                                                        <i class="pe-7s-trash accordionElement" style="font-size:20px;" onclick="$(this).next().click();"/>
                                                                         <h:commandButton id="rmvFromAccordionTabBtn" style="display:none" a:data-index="#{vs.index}">
                                                                             <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.rmvAccordionNode}" onevent="reRunJSCode"/>
                                                                         </h:commandButton>
@@ -289,7 +289,7 @@
                                                                  </div>
                                                                 <div class="row" style="padding:0;margin:0">
                                                                 <div class="col-md-12" style="text-align:right;padding:0;margin:0">
-                                                                    <i class="pe-7s-trash accordion" style="font-size:20px;cursor:pointer;display:#{1>vs.index?'':'none'}" onclick="$(this).next().click();"/>
+                                                                    <i class="pe-7s-trash accordionElement" style="font-size:20px;cursor:pointer;display:#{1>vs.index?'':'none'}" onclick="$(this).next().click();"/>
                                                                     <h:commandButton id="rmvFromAccordionBtn" style="display:none" a:data-index="#{vs.index}">
                                                                         <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.rmvAccordionNode}" onevent="reRunJSCode"/>
                                                                     </h:commandButton>
@@ -330,6 +330,7 @@
                             return confirm("No ha guardado los cambios realizados ¿Desea salir sin guardar?");
                         else return true;
                     });
+                    initializeAccordion(false,true);
                 });
                 function deletionAlert()
                 {

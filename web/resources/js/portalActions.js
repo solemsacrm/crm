@@ -299,7 +299,7 @@ function commitChanges(tbodyID,tr,msg)
     var $cm=$tb.siblings(tbodyID+"commit").eq(0),
         trn=$tr.data("row");
         c=$tr.children().first().data("id");
-    var cmV="["+trn+"],["+((c!=null&&c!=='')?c:"")+"],";
+    var cmV="["+trn+"]"+(($tr.hasClass("newPR")?",":(",["+((c!=null&&c!=='')?c:"")+"],")));
         c=0;
     var flag=true;
     $vals.each(function(){
@@ -344,8 +344,12 @@ function commitChanges(tbodyID,tr,msg)
                 else
                     $t.val(v);
             }*/
-            else
-                v=$t.val();
+            else 
+            {
+                v=$t.parent().attr("data-id");
+                if(v==null||v=="")
+                    v=$t.val();
+            }
             c++;
             if($t.hasClass("number"))
                 v=keepNumericValue(v);//Function Fom NumberFields.js
