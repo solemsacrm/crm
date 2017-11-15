@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="rex_obras")
@@ -68,6 +69,11 @@ public class REX_Obras implements Serializable {
     private String zz_UsuarioCreacion;
     @Column(name="zz_UsuarioModificacion")
     private String zz_UsuarioModificacion;
+    
+    @Transient
+    private int REX_AvanceLenght;
+    @Transient
+    private String FechaInicioString,FechaFinString;
 
     public REX_Obras() {
 
@@ -231,6 +237,31 @@ public class REX_Obras implements Serializable {
 
     public void setZz_UsuarioModificacion(String zz_UsuarioModificacion) {
         this.zz_UsuarioModificacion = zz_UsuarioModificacion;
+    }
+
+    @Transient
+    public int getREX_AvanceLenght() {
+        return REX_AvanceLenght;
+    }
+    @Transient
+    public void setREX_AvanceLenght(int REX_AvanceLenght) {
+        this.REX_AvanceLenght = REX_AvanceLenght;
+    }
+    @Transient
+    public String getFechaInicioString() {
+        return FechaInicioString;
+    }
+    @Transient
+    public void setFechaInicioString(String FechaInicioString) {
+        this.FechaInicioString = FechaInicioString;
+    }
+    @Transient
+    public String getFechaFinString() {
+        return FechaFinString;
+    }
+    @Transient
+    public void setFechaFinString(String FechaFinString) {
+        this.FechaFinString = FechaFinString;
     }
 
     @Override

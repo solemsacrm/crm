@@ -64,11 +64,6 @@ public class ObrasCRS implements Serializable{
         this.lista=dao.getREX_ObrasList();
     }
     
-    public void fetchREX_Obra(int id)
-    {
-        this.cliente=dao.getREX_Obra(id);
-    }
-    
     public String goToDetail()
     { 
         return "obrasD?faces-redirect-true";

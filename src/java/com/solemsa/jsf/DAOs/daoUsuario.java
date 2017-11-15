@@ -70,15 +70,11 @@ public class daoUsuario {
         if(Session!=null)
         try
         {			
-            // start a transaction
             Session.beginTransaction();
-            System.out.println("AAAAAAAAAAAAAAa");
-            // query students
             List<Usuarios> lista=Session.createCriteria(Usuarios.class).add(Restrictions.eq("Usuario",Usuario)).add(Restrictions.eq("Contrasenia",Contrasenia)).list();
             System.out.println("QUERY RESULT: "+lista.size());
             //commit transaction
             Session.getTransaction().commit();
-            System.out.println("TRANSACTION COMMITED");
             Factory.close();
             
             return lista.get(0).toString();

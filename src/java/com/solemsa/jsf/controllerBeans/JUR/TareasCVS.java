@@ -140,6 +140,7 @@ public class TareasCVS implements Serializable{
     {
         model=dao.getJUR_Tarea(id,false);
         model2=dao.getJUR_Tarea(id,true);
+        System.out.println("\t\t@@@"+logInBean.getUsuario().isGerente());
         if(id<1)
         {
             ca=et=as=de=fe=fa=no=es=rh=cambios=true;

@@ -299,7 +299,7 @@ function commitChanges(tbodyID,tr,msg)
     var $cm=$tb.siblings(tbodyID+"commit").eq(0),
         trn=$tr.data("row");
         c=$tr.children().first().data("id");
-    var cmV="["+trn+"]"+(($tr.hasClass("newPR")?",":(",["+((c!=null&&c!=='')?c:"")+"],")));
+    var cmV="["+trn+"],"+("["+((c!=null&&c!=='')?c:"")+"],");
         c=0;
     var flag=true;
     $vals.each(function(){
@@ -346,9 +346,11 @@ function commitChanges(tbodyID,tr,msg)
             }*/
             else 
             {
-                v=$t.parent().attr("data-id");
+                v=$t.val();
                 if(v==null||v=="")
-                    v=$t.val();
+                    v=$t.parent().attr("data-id");
+                if(v==null||v=="")
+                    v="";
             }
             c++;
             if($t.hasClass("number"))
@@ -803,7 +805,7 @@ function loadSourceSelect(d,tr,pos,src)
     {
         var $so=$("#"+src),
             $tb=$so.parent().siblings('table').children("tbody").eq(0);
-            //Will check if label contains other columns data from the DataBase
+            //Will check if the options label contains other columns' data from the DataBase
             $so.children().each(function(){
                 var $t=$(this),arr=$t.text().split(",["),n=arr.length;
                 $t.text(arr[0].replace("]",""));
