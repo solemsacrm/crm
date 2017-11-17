@@ -343,11 +343,6 @@
                         event.stopPropagation();
                     });
                 });
-                function reRunJScode()
-                {
-                    runJScode(true,true,true);
-                    loadDatePickers();
-                }
                 function loadDatePickers(){
                     $('.date').each(function(){
                         var $dp=$(this);

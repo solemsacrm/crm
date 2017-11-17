@@ -185,7 +185,7 @@ public class ObrasCVS implements Serializable{
         model2=dao.getREX_Obra(model.getId_REX_Obra(),true);
         {
             try{
-                long search=model.get_Cliente().getId_Clientes();
+                /*long search=model.get_Cliente().getId_Clientes();
                 String txt=null;
                 for(ListValues t:clientes.getList())
                     if(t.getId()==search)
@@ -194,7 +194,7 @@ public class ObrasCVS implements Serializable{
                         break;
                     }
                 model.get_Cliente().setNombre(txt);
-                clientes = new ValueLists();
+                clientes = new ValueLists();*/
                 sortAvances();
             }catch(Exception e){
                 System.out.println("saveREX_Obra EXCEPTION: "+e);

@@ -365,7 +365,8 @@
                         });
                     });
                 }
-                function reRunJSCode(data){
+                function reRunJSCode(data)
+                {
                     if(data.status==='success')
                     {
                         runJScode(true,true,true);
@@ -375,17 +376,17 @@
                 }
                 function accordionJSCode(data)
                 {
-                        if(data.status==='success')
-                        {
-                            var ul=$("#mainForm3").find('ul');
-                            initializeAccordion();
-                            loadDatePickers(ul);
-                            ul.find('.number').each(function(){
-                                $(this).focus();
-                                $(this).blur();
-                            });
-                            delete ul;
-                        }
+                    if(data.status==='success')
+                    {
+                        var ul=$("#mainForm3").find('ul');
+                        initializeAccordion();
+                        loadDatePickers(ul);
+                        ul.find('.number').each(function(){
+                            $(this).focus();
+                            $(this).blur();
+                        });
+                        delete ul;
+                    }
                 }
             </script>
             </ui:define>
