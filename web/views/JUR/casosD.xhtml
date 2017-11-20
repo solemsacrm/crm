@@ -93,7 +93,7 @@
                                                     <h:outputLabel>Papel del Cliente</h:outputLabel>
                                                     <h:selectOneMenu id="PC" styleClass="form-control" value="#{casosCVS.model.papelCliente}">
                                                         <f:selectItem itemValue="#{casosCVS.model.juzgado eq 'Penal'?'Denunciante':'Demandante'}"/>
-                                                        <f:selectItem itemValue="Demandado" itemDisabled="#{casosCVS.model.juzgado eq 'Penal'}"/>
+                                                        <f:selectItem itemValue="#{casosCVS.model.juzgado eq 'Penal'?'Presunto Responsable':'Demandado'}"/>
                                                         <f:ajax event="change" listener="#{casosCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
                                                     </h:selectOneMenu>
                                                 </div>
