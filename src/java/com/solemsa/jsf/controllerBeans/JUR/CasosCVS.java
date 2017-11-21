@@ -9,7 +9,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import com.solemsa.jsf.DAOs.JUR.daoJUR_Casos;
 import com.solemsa.hibernate.entities.JUR.JUR_Casos;
-import com.solemsa.jsf.data.ListValues;
 import com.solemsa.jsf.data.ValueLists;
 import com.solemsa.jsf.modelBeans.LogInBean;
 import java.util.Iterator;
@@ -168,8 +167,6 @@ public class CasosCVS implements Serializable{
         {
             System.out.println("Current ID: "+model.getId_JUR_Caso());
             model.setZz_UsuarioModificacion(usu);
-            if(model.getJuzgado().equals("Penal"))
-                model.setPapelCliente("Denunciante");
             if(model.getId_JUR_Caso()<1)
             {
                 model.setZz_UsuarioCreacion(usu);

@@ -30,7 +30,7 @@ public class ObrasCVS implements Serializable{
     private int rowID,avN;
     private boolean cambios=false;
     boolean ic,nm,fi,ff,d1,d2,ci,es,pa,mo,pr,nt,cp,et,av[];
-    private String FechaInicio,FechaFin,Monto;
+    private String Monto;
     private CommonActions ca;
     
     private ValueLists clientes;
@@ -97,22 +97,6 @@ public class ObrasCVS implements Serializable{
         this.clientes = cliNomList;
     }
 
-    public String getFechaInicio() {
-        return FechaInicio;
-    }
-
-    public void setFechaInicio(String FechaInicio) {
-        this.FechaInicio = FechaInicio;
-    }
-
-    public String getFechaFin() {
-        return FechaFin;
-    }
-
-    public void setFechaFin(String FechaFin) {
-        this.FechaFin = FechaFin;
-    }
-
     public String getMonto() {
         return Monto;
     }
@@ -123,41 +107,23 @@ public class ObrasCVS implements Serializable{
     
     public void fetchREX_Obra(long id)
     {
-        model=dao.getREX_Obra(id);
-        model2=dao.getREX_Obra(id);
+        model=dao.getREX_Obra(id,false);
+        model2=dao.getREX_Obra(id,true);
+        avN=model.getREX_AvanceLenght();
+        av=new boolean[avN];
         if(id<1)
         {
-            List <REX_Avances> tmp=new java.util.ArrayList();
-            tmp.add(new REX_Avances());
-            model.setREX_Avances(tmp);
             model.setPais("México");
+            model.setEstado("Guanajuato");
             model.setMoneda("MXN");
             model.setEstatus(2);
             nm=fi=ff=d1=d2=ci=es=pa=mo=pr=nt=cp=et=cambios=true;
-            avN=model.getREX_Avances().size();
-            av=new boolean[avN];
             setAvancesFlag(true);
-            FechaInicio="";
-            FechaFin="";
         }
         else
         {
-            if(model.getREX_Avances()==null)
-            {
-                List <REX_Avances> tmp=new java.util.ArrayList();
-                REX_Avances ra=new REX_Avances();
-                REX_Obras ob=new REX_Obras();
-                ob.setId_REX_Obra(model.getId_REX_Obra());
-                ra.set_REX_Obra(ob);
-                model.getREX_Avances().add(0,ra);
-                tmp.add(ra);
-                model.setREX_Avances(tmp);
-            }
-            avN=model.getREX_Avances().size();
-            av=new boolean[avN];
-            setAvancesFechaString();
-            FechaInicio=model.getFechaInicio()==null?"":ca.stringToDate(model.getFechaInicio().toString(),"-").toString();
-            FechaFin=model.getFechaFin()==null?"":ca.stringToDate(model.getFechaFin().toString(),"-").toString();
+            nm=fi=ff=d1=d2=ci=es=pa=mo=pr=nt=cp=et=cambios=false;
+            setAvancesFlag(false);
         }
     }
     
@@ -215,27 +181,11 @@ public class ObrasCVS implements Serializable{
     public void saveREX_Obra(String usu)
     {
         System.out.println("saveREX_Obra METHOD REACHED");
-        System.out.println("Current ID: "+model.getId_REX_Obra());
-        model.setZz_UsuarioModificacion(usu);
-        model.setFechaInicio(ca.stringToDate(FechaInicio,"/"));
-        System.out.println("Fecha Inicio: "+model.getFechaInicio());
-        model.setFechaFin(ca.stringToDate(FechaFin,"/"));
-        System.out.println("Fecha Fin: "+model.getFechaFin());
-        if(model.getId_REX_Obra()<1)
+        model=dao.modifyREX_Obra(model,usu);
+        model2=dao.getREX_Obra(model.getId_REX_Obra(),true);
         {
-            model.setZz_UsuarioCreacion(usu);
-            dao.newREX_Obra(model);
-        }
-        else
-        {
-            System.out.println("REX_Obras "+model.getId_REX_Obra()+" MODIFY ABOUT TO START");
-            System.out.println("NEW ESTATUS IS: "+model.getEstatus());
             try{
-                System.out.println("MODEL 2 ABOUT TO BE MODIFIED");
-                model2=dao.modifyREX_Obra(model,getAvancesFlag()?model2.getREX_Avances():null);
-                System.out.println("MODEL 2 SUCCESSFULLY MODIFIED");
-                //Sets name to show in Value List
-                long search=model.get_Cliente().getId_Clientes();
+                /*long search=model.get_Cliente().getId_Clientes();
                 String txt=null;
                 for(ListValues t:clientes.getList())
                     if(t.getId()==search)
@@ -244,15 +194,16 @@ public class ObrasCVS implements Serializable{
                         break;
                     }
                 model.get_Cliente().setNombre(txt);
-                //Sets name to show in Value List
-                clientes = new ValueLists();
+                clientes = new ValueLists();*/
                 sortAvances();
             }catch(Exception e){
-                System.out.println("SETTING NEW VALUES TO MODELS EXCEPTION: "+e);
+                System.out.println("saveREX_Obra EXCEPTION: "+e);
+                e.printStackTrace();
             }
         }
         nm=fi=ff=d1=d2=ci=es=pa=mo=nt=pr=cp=et=cambios=false;
         setAvancesFlag(false);
+        System.out.println("saveREX_Obra METHOD PERFORMED");
     }
     
     private void sortAvances()
@@ -392,8 +343,8 @@ public class ObrasCVS implements Serializable{
         String arr[]=s.split("_");
         switch(arr[0])
         {
-            case "FI":fi=!FechaInicio.equals(model2.getFechaInicio()+"");break;
-            case "FF":ff=!FechaFin.equals(model2.getFechaFin()+"");break;
+            case "FI":fi=!model.getFechaInicioString().equals(model2.getFechaInicioString());break;
+            case "FF":ff=!model.getFechaFinString().equals(model2.getFechaFinString());break;
             case "IC":ic=model.get_Cliente().getId_Clientes()!=model2.get_Cliente().getId_Clientes();break;
             case "PR":pr=model.getMonto()!=model2.getMonto();break;
             case "ET":et=model.getEstatus()!=model2.getEstatus();break;
@@ -435,17 +386,6 @@ public class ObrasCVS implements Serializable{
         return f;
     }
     
-    private void setAvancesFechaString()
-    {
-        for(int j=0;j<avN;j++)
-        {
-            REX_Avances t=model.getREX_Avances().get(j);
-            String f=t.getFecha()==null?null:t.getFecha().toString();
-            f=ca.parseDate(f,"-");
-            t.setFechaString(f);
-            model2.getREX_Avances().get(j).setFechaString(f);
-        }
-    }
     
     private boolean getAvancesFlag()
     {

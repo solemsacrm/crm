@@ -99,7 +99,7 @@
                                         </div>
                                         
                                         <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;">
-                                            <f:ajax listener="#{tareasCVS.updateFormServicios}" render="mainForm mainForm2 formu" onevent="reRunJSCode"/>
+                                            <f:ajax listener="#{tareasCVS.updateFormServicios}" render="mainForm mainForm2" onevent="#{loginBean.usuario.gerente?'reRunJSCode':'function(data){}'}"/>
                                         </h:commandButton>
                                         <h:commandButton id="mainFormBtnF" class="#{tareasCVS.cambios?'btn btn-success btn-fill pull-right':'btn btn-success pull-right'}" value="Guardar Cambios" onclick="fromAction(#{tareasCVS.cambios});return false;"/>
                                         <div class="clearfix"/>

@@ -23,7 +23,7 @@ public class JUR_EtapasOrden
             case "Menor Civil":siguiente=getEtapaGeneral(caso.getJUR_EtapasLength(),caso.getPapelCliente());break;
             case "Oralidad Familiar":siguiente=getEtapaOralidad(caso);break;
             case "Oralidad Mercantil":siguiente=getEtapaOralidad(caso);break;
-            case "Penal":siguiente=getEtapaPenal(caso.getJUR_EtapasLength());break;
+            case "Penal":siguiente=getEtapaPenal(caso.getJUR_EtapasLength(),caso.getPapelCliente());break;
         }
         return siguiente;
     }
@@ -47,12 +47,12 @@ public class JUR_EtapasOrden
         return e;
     }
     
-    private static String getEtapaPenal(int etapaActual)
+    private static String getEtapaPenal(int etapaActual,String papelCliente)
     {
         String e;
         switch(etapaActual)
         {
-            case 0:e="Contestación";break;
+            case 0:e=papelCliente.equals("Denunciante")?"Denuncia":"Contestación";break;
             case 1:e="Investigación";break;
             case 2:e="Aportación de Pruebas";break;
             case 3:e="Vinculación al Proceso";break;

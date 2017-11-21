@@ -874,29 +874,26 @@ public class daoJUR_Etapas {
             etapa.setNombre(nombre);
             int n=nombre.length()-1;
             if(nombre.charAt(n)==')')
-                nombre=nombre.substring(0,n);
-            if(!etapa.getJUR_Caso().getJuzgado().equals("Penal"))
+            nombre=nombre.substring(0,n);
+            if(nombre.toLowerCase().endsWith("pruebas")&&etapa.getJUR_Caso().getPurebasFecha()==null)
             {
-                if(nombre.toLowerCase().endsWith("pruebas")&&etapa.getJUR_Caso().getPurebasFecha()==null)
-                {
-                    etapa.setJUR_EtapaDetalle((List<JUR_EtapaDetalle>)ca.newArrayList());
-                    etapa.getJUR_Caso().setPurebasFecha(ca.getCurrentDate());
-                    String[] fa=etapa.getJUR_Caso().getPurebasFecha().toString().split("-");
-                    JUR_EtapaDetalle tmp=setDefaultPruebasDetalle(etapa,getJUR_Fechas(Integer.parseInt(fa[1]),Integer.parseInt(fa[0])),usu,ca);
-                    setJUR_Alcance(tmp.getJUR_Notificacion());
-                    etapa.getJUR_EtapaDetalle().add(tmp);
-                    etapa.setJUR_EtapaDetalleLength(1);
-                }
-                else if((nombre.toLowerCase().contains("contestación")||nombre.toLowerCase().contains("contestacion"))&&etapa.getJUR_Caso().getContestacionFecha()==null)
-                {
-                    etapa.setJUR_EtapaDetalle((List<JUR_EtapaDetalle>)ca.newArrayList());
-                    etapa.getJUR_Caso().setContestacionFecha(ca.getCurrentDate());
-                    String[] fa=etapa.getJUR_Caso().getContestacionFecha().toString().split("-");
-                    JUR_EtapaDetalle tmp=JUR_EtapasOrden.setDefaultContestacionDetalle(etapa,getJUR_Fechas(Integer.parseInt(fa[1]),Integer.parseInt(fa[0])),usu,ca);
-                    setJUR_Alcance(tmp.getJUR_Notificacion());
-                    etapa.getJUR_EtapaDetalle().add(tmp);
-                    etapa.setJUR_EtapaDetalleLength(1);
-                }
+                etapa.setJUR_EtapaDetalle((List<JUR_EtapaDetalle>)ca.newArrayList());
+                etapa.getJUR_Caso().setPurebasFecha(ca.getCurrentDate());
+                String[] fa=etapa.getJUR_Caso().getPurebasFecha().toString().split("-");
+                JUR_EtapaDetalle tmp=setDefaultPruebasDetalle(etapa,getJUR_Fechas(Integer.parseInt(fa[1]),Integer.parseInt(fa[0])),usu,ca);
+                setJUR_Alcance(tmp.getJUR_Notificacion());
+                etapa.getJUR_EtapaDetalle().add(tmp);
+                etapa.setJUR_EtapaDetalleLength(1);
+            }
+            else if((nombre.toLowerCase().contains("contestación")||nombre.toLowerCase().contains("contestacion"))&&etapa.getJUR_Caso().getContestacionFecha()==null)
+            {
+                etapa.setJUR_EtapaDetalle((List<JUR_EtapaDetalle>)ca.newArrayList());
+                etapa.getJUR_Caso().setContestacionFecha(ca.getCurrentDate());
+                String[] fa=etapa.getJUR_Caso().getContestacionFecha().toString().split("-");
+                JUR_EtapaDetalle tmp=JUR_EtapasOrden.setDefaultContestacionDetalle(etapa,getJUR_Fechas(Integer.parseInt(fa[1]),Integer.parseInt(fa[0])),usu,ca);
+                setJUR_Alcance(tmp.getJUR_Notificacion());
+                etapa.getJUR_EtapaDetalle().add(tmp);
+                etapa.setJUR_EtapaDetalleLength(1);
             }
         }
         catch(Exception e)

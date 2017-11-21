@@ -104,40 +104,57 @@ public class daoREX_Obras {
         return lista;
     }
     
-    public REX_Obras getREX_Obra(long id)
+    public REX_Obras getREX_Obra(long id,boolean load)
     {
         System.out.println("getREX_Obra METHOD REACHED: "+id);
-        REX_Obras cfg;
+        REX_Obras cfg=null;
         if(id>0)
         {
-            System.out.println("ID RECEIVED: "+id);
-            Session=Factory.getCurrentSession();
-            System.out.println("CURRENT SESSION GOTTEN");
-            Session.beginTransaction();
-            System.out.println("get TRANSACTION STARTED");
-            cfg=(REX_Obras)Session.get(REX_Obras.class,id);
-            System.out.println("NEW LIST CONSTRUCTED");
-            cfg.getREX_Avances().size();
-            System.out.println("LAZY FETCH LIST SETTED");
-            System.out.println("REQUESTED cliente FETCHED");
-            Session.getTransaction().commit();
-            System.out.println("get TRANSACTION COMMITED");
-            if(cfg.get_Cliente()==null)
-                cfg.set_Cliente(new Clientes());
             try
             {
-                Session.close();
-                System.out.println("get REX_Obra SESSION CLOSED");
-            }catch(Exception e)
-            {
-                System.out.println("CLOSE SESSION EXCEPTION :"+e);
+                Session=Factory.getCurrentSession();
+                Session.beginTransaction();
+                System.out.println("get TRANSACTION STARTED");
+                if(load)
+                    cfg=(REX_Obras)Session.load(REX_Obras.class,id);
+                else
+                    cfg=(REX_Obras)Session.get(REX_Obras.class,id);
+                int n=cfg.getREX_Avances().size();
+                System.out.println("\tREX_Avance LIST INITIALIZED with: "+n);
+                Session.getTransaction().commit();
+                if(cfg.getFechaInicio()!=null)
+                    cfg.setFechaInicioString(ca.parseDate(cfg.getFechaInicio().toString(),"-"));
+                if(cfg.getFechaFin()!=null)
+                    cfg.setFechaFinString(ca.parseDate(cfg.getFechaFin().toString(),"-"));
+                System.out.println("get TRANSACTION COMMITED");
+                if(cfg.get_Cliente()==null)
+                    cfg.set_Cliente(new Clientes());
+                for(int i=0;i<n;i++)
+                {
+                    REX_Avances tmp=cfg.getREX_Avances().get(i);
+                    if(tmp.getFecha()!=null)
+                        tmp.setFechaString(ca.parseDate(tmp.getFecha().toString(),"-"));
+                }
+                cfg.setREX_AvanceLenght(n);
             }
-            System.out.println("LIST LOAD SESSION CLOSED");
+            catch(Exception e)
+            {
+                System.out.println("getREX_Obra EXCEPTION: "+e);
+                e.printStackTrace();
+            }
+            finally
+            {
+                if(Session.isOpen())
+                    Session.close();
+            }
         }
         else
         {
             cfg=new REX_Obras();
             cfg.set_Cliente(new Clientes());
+            cfg.setREX_Avances(ca.newArrayList());
+            cfg.getREX_Avances().add(new REX_Avances());
+            cfg.setREX_AvanceLenght(1);
         }
         return cfg;
     }
@@ -249,40 +266,56 @@ public class daoREX_Obras {
         }
     }
     
-    public REX_Obras modifyREX_Obra(REX_Obras source,List<REX_Avances> avances){
-        REX_Obras target=null;
-        try {								
-            // now get a new session and start transaction
+    public REX_Obras modifyREX_Obra(REX_Obras source,String usu)
+    {
+        System.out.println("modifyREX_Obra METHOD REACHED");
+        try
+        {
+            source.setZz_FechaModificacion(ca.getCurrentTimestamp());
+            source.setZz_UsuarioModificacion(usu);
+            source.setFechaInicio(ca.stringToDate(source.getFechaInicioString(),"/"));
+            source.setFechaFin(ca.stringToDate(source.getFechaFinString(),"/"));
             Session=Factory.getCurrentSession();
             Session.beginTransaction();
-            System.out.println("modify TRANSACTION STARTED");
-            if(avances!=null)
-                new daoREX_Avances(Session).saveFromREX_Obra(source.getREX_Avances(),avances,source.getZz_UsuarioModificacion());
-            // retrieve student based on the id: primary key
-            target=setNewValues(source,null);
-            System.out.println("obra"+target.getId_REX_Obra()+" SUCCESSFULLY MODIFIED");
-            System.out.println("LAZY FETCH INITIALIZED WITH: "+target.getREX_Avances().size()+" ELEMENTS");
-            // commit the transaction
+            if(source.get_Cliente().getId_Clientes()<1)
+                source.set_Cliente(null);
+            if(source.getId_REX_Obra()<1)
+            {
+                source.setZz_FechaCreacion(source.getZz_FechaModificacion());
+                source.setZz_UsuarioCreacion(usu);
+                Session.save(source);
+            }
+            else Session.update(source);
+            for(int i=0;i<source.getREX_AvanceLenght();i++)
+            {
+                REX_Avances tmp=source.getREX_Avances().get(i);
+                tmp.setZz_FechaModificacion(source.getZz_FechaModificacion());
+                tmp.setZz_UsuarioModificacion(usu);
+                if(tmp.getId_REX_Avance()>0)
+                    Session.update(tmp);
+                else
+                {
+                    tmp.setZz_FechaCreacion(tmp.getZz_FechaModificacion());
+                    tmp.setZz_UsuarioCreacion(usu);
+                    tmp.set_REX_Obra(source);
+                    Session.save(tmp);
+                }
+            }
             Session.getTransaction().commit();
-            System.out.println("modify TRANSACTION COMMITED");
-            return target;
+            if(source.get_Cliente()==null)
+                source.set_Cliente(new Clientes());
         }
         catch(Exception e){
-            System.out.println("modify EXCEPTION: "+e);
+            System.out.println("modifyREX_Obra EXCEPTION: "+e);
+            e.printStackTrace();
         }
         finally
         {
-            try
-            {
+            if(Session.isOpen())
                 Session.close();
-                System.out.println("modify REX_Obra SESSION CLOSED");
-            }catch(Exception e)
-            {
-                System.out.println("CLOSE SESSION EXCEPTION :"+e);
-            }
-            
         }
-        return target!=null?target:source;
+        System.out.println("modifyREX_Obra METHOD PERFORMED");
+        return source;
     }
     
     private REX_Obras setNewValues(REX_Obras source,REX_Obras target){

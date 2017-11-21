@@ -62,7 +62,7 @@
                                                 <div class="form-group">
                                                     <h:outputLabel>Fecha Inicio</h:outputLabel>
                                                     <div class="input-group date">
-                                                        <h:inputText id="FI" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{obrasCVS.fechaInicio}">
+                                                        <h:inputText id="FI" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{obrasCVS.model.fechaInicioString}">
                                                             <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
                                                         </h:inputText>
                                                         <div class="input-group-addon">
@@ -75,7 +75,7 @@
                                                 <div class="form-group">
                                                     <h:outputLabel>Fecha Término</h:outputLabel>
                                                     <div class="input-group date">
-                                                        <h:inputText id="FF" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{obrasCVS.fechaFin}">
+                                                        <h:inputText id="FF" styleClass="form-control" a:placeholder="DD/MM/AAAA" value="#{obrasCVS.model.fechaFinString}">
                                                             <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
                                                         </h:inputText>
                                                         <div class="input-group-addon">
@@ -104,7 +104,7 @@
                                                         <div class="form-group">
                                                             <h:outputLabel>Precio</h:outputLabel>
                                                             <h:inputText id="PR" styleClass="form-control number" a:placeholder="Precio" value="#{obrasCVS.model.monto}" style="text-align:right;" onfocus="onNumberFieldFocus('mainForm:PR')" onblur="onNumberFieldBlur('mainForm:PR','$','f',2)">
-                                                                <f:convertNumber maxFractionDigits="2"/>
+                                                                <!--<f:convertNumber maxFractionDigits="2"/>-->
                                                                 <f:ajax event="change" listener="#{obrasCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
                                                             </h:inputText>
                                                         </div>
@@ -222,24 +222,24 @@
                                                             <h:outputLabel value="Etapa Actual:"/>
                                                         </div>
                                                         <div class="col-md-2" style="text-align: right">
-                                                            <i class="pe-7s-plus accordion" style="font-size:20px;cursor:pointer;" onclick="$(this).next().click();"/>
+                                                            <i class="pe-7s-plus accordionElement" style="font-size:20px;cursor:pointer;" onclick="this.nextSibling.click();"/>
                                                             <h:commandButton id="addToAccordionBtn" style="display:none">
-                                                                <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.addAccordionNode}" onevent="reRunJSCode"/>
+                                                                <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.addAccordionNode}" onevent="accordionJSCode"/>
                                                             </h:commandButton>
                                                         </div>
                                                     </div>
                                                     </h:panelGroup>
-                                                    <ul id="accordionUL" class="nav nav-pills nav-stacked">
+                                                    <ul id="accordionUL" class="nav nav-pills nav-stacked accordion">
                                                         <ui:repeat var="a" value="#{obrasCVS.model.REX_Avances}" varStatus="vs" rendered="#{obrasCVS.model.estatus==2}">
-                                                            <li role="presentation" class="accordion" style="#{1>vs.index?'display:none':''}">
+                                                            <li role="presentation" class="accordionElement" style="#{1>vs.index?'display:none':''}">
                                                                 <div class="row">
                                                                     <div class="col-md-10 accText">
                                                                         #{a.etapa}
                                                                     </div>
                                                                     <div class="col-md-2" style="text-align:right">
-                                                                        <i class="pe-7s-trash accordion" style="font-size:20px;" onclick="$(this).next().click();"/>
+                                                                        <i class="pe-7s-trash accordionElement" style="font-size:20px;" onclick="$(this).next().click();"/>
                                                                         <h:commandButton id="rmvFromAccordionTabBtn" style="display:none" a:data-index="#{vs.index}">
-                                                                            <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.rmvAccordionNode}" onevent="reRunJSCode"/>
+                                                                            <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.rmvAccordionNode}" onevent="accordionJSCode"/>
                                                                         </h:commandButton>
                                                                     </div>
                                                                 </div>
@@ -289,9 +289,9 @@
                                                                  </div>
                                                                 <div class="row" style="padding:0;margin:0">
                                                                 <div class="col-md-12" style="text-align:right;padding:0;margin:0">
-                                                                    <i class="pe-7s-trash accordion" style="font-size:20px;cursor:pointer;display:#{1>vs.index?'':'none'}" onclick="$(this).next().click();"/>
+                                                                    <i class="pe-7s-trash accordionElement" style="font-size:20px;cursor:pointer;display:#{1>vs.index?'':'none'}" onclick="$(this).next().click();"/>
                                                                     <h:commandButton id="rmvFromAccordionBtn" style="display:none" a:data-index="#{vs.index}">
-                                                                        <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.rmvAccordionNode}" onevent="reRunJSCode"/>
+                                                                        <f:ajax render="mainForm3 mainForm:mainFormBtnF" listener="#{obrasCVS.rmvAccordionNode}" onevent="accordionJSCode"/>
                                                                     </h:commandButton>
                                                                 </div>
                                                                 </div>
@@ -330,6 +330,7 @@
                             return confirm("No ha guardado los cambios realizados ¿Desea salir sin guardar?");
                         else return true;
                     });
+                    initializeAccordion(false,true);
                 });
                 function deletionAlert()
                 {
@@ -350,8 +351,8 @@
                             afterAjaxSelect("mainForm\\:"+current,n); 
                     }
                 }
-                function loadDatePickers(){
-                    $('.date').each(function(){
+                function loadDatePickers(where){
+                    $('.date',where).each(function(){
                         var $dp=$(this);
                         var container=$dp.length>0 ? $dp.closest(".card") : "body";
                         $dp.datepicker({
@@ -364,15 +365,27 @@
                         });
                     });
                 }
-                function reRunJSCode(data){
+                function reRunJSCode(data)
+                {
                     if(data.status==='success')
                     {
-                        loadDatePickers();
-                        $(".number").each(function(){
+                        runJScode(true,true,true);
+                        loadDatePickers(document);
+                        initializeAccordion();
+                    }
+                }
+                function accordionJSCode(data)
+                {
+                    if(data.status==='success')
+                    {
+                        var ul=$("#mainForm3").find('ul');
+                        initializeAccordion();
+                        loadDatePickers(ul);
+                        ul.find('.number').each(function(){
                             $(this).focus();
                             $(this).blur();
                         });
-                        initializeAccordion();
+                        delete ul;
                     }
                 }
             </script>

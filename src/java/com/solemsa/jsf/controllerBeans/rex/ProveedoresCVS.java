@@ -189,10 +189,10 @@ public class ProveedoresCVS implements Serializable{
             System.out.println("OFERTA ID IS EMPTY");
             REX_Oferta ro=new REX_Oferta();
             ro.setREX_Material(new REX_Materiales());
-            ro.getREX_Material().setId_REX_Material(Long.parseLong(arr[2]));
+            ro.getREX_Material().setId_REX_Material(Long.parseLong(arr[3]));
             ro.setREX_Proveedor(model);
-            ro.setPrecio(arr[3].isEmpty()?0:Float.parseFloat(arr[4]));
-            ro.setMoneda(arr[4]);
+            ro.setPrecio(arr[4].isEmpty()?0:Float.parseFloat(arr[4]));
+            ro.setMoneda(arr[5]);
             String u=logInBean.getUsuario().getUsername();
             ro.setZz_UsuarioCreacion(u);
             ro.setZz_UsuarioModificacion(u);
@@ -207,7 +207,7 @@ public class ProveedoresCVS implements Serializable{
                 System.out.println("OFERTA PROVEEDOR WAS NULL");
                 ro.setREX_Material(new REX_Materiales());
             }
-            ro.getREX_Material().setId_REX_Material(Long.parseLong(arr[2]));
+            ro.getREX_Material().setId_REX_Material(Long.parseLong(arr[3]));
             ro.setPrecio(arr[4].isEmpty()?0:Float.parseFloat(arr[4]));
             ro.setMoneda(arr[5]);
             ro.setZz_UsuarioModificacion(logInBean.getUsuario().getUsername());

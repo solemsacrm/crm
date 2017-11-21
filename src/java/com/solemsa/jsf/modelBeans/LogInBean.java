@@ -239,7 +239,7 @@ public class LogInBean implements Serializable{
                     classesSwitch(cfg,2);
                     com.solemsa.hibernate.entities.JUR.JUR_RecursosHumanos rh=new com.solemsa.jsf.DAOs.JUR.daoJUR_RecursosHumanos(Factory).getJUR_RecursoHumano(usuario.getJur());
                     usuario.setArea(2);
-                    usuario.setNombre(rh.getNombre()+rh.getApellidos());
+                    usuario.setNombre(rh.getNombre()+(rh.getApellidos()!=null?(" "+rh.getApellidos()):""));
                     usuario.setRol(rh.getPuesto());
                 }
                 else classesSwitch(cfg,a);

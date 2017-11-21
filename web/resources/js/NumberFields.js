@@ -44,6 +44,7 @@ function addSymbolsToNumericValues(val,symbol,position,decimals)
         var di=val.indexOf(".");
         if(di>-1)
         {
+            //Si tiene punto decimal
             var arr=val.split("."),n=arr.length,c=n-2;
             val=(n>1?"":"0");
             for(var i=0;i<n;i++)

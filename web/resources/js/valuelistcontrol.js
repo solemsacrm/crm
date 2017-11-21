@@ -253,15 +253,17 @@ function loadselect($vl,n)
         // Updates the select element to have the value of the equivalent option
         $listItems.click(function (e){
             iLiSelected=$(this).index()+1;
-            if(liSelected)
+            $thisChildren.filter(function(){
+                return this.selected === true; 
+            }).attr('selected',false);
+            /*if(liSelected)
             {
-                $thisChildren.filter(function(){
-                    return $(this).prop('selected') === true; 
-                }).attr('selected',null);
                 liSelected.removeClass('selected');
-            }
+                liSelected.attr('selected',null);
+            }*/
             //alert(1);
             liSelected=$(this);
+            liSelected.siblings().removeClass('selected');
             if(!liSelected.hasClass('selected'))
                 liSelected.addClass('selected');
             $styledSelect.text(liSelected.text()).removeClass('active');
@@ -269,7 +271,10 @@ function loadselect($vl,n)
             $list.hide();
             //alert(2);
             $thisChildren.filter(function(){
-                return $(this).text() === liSelected.text(); 
+                if(this.value!=null)
+                    return this.value == liSelected.attr('rel');
+                else
+                    return $(this).text() === liSelected.text(); 
             }).attr('selected',true);
             //alert(3);
             if($this.hasClass("inPortalSS"))
@@ -302,7 +307,7 @@ function loadselect($vl,n)
             $styledSelect.text($this.text());
         $styledSelect.click(function(e){
             $styledSelect.off('click');
-            $this.focus();
+            this.previousSibling.focus();
             e.stopPropagation();
         });
     }

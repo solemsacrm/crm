@@ -299,7 +299,7 @@ function commitChanges(tbodyID,tr,msg)
     var $cm=$tb.siblings(tbodyID+"commit").eq(0),
         trn=$tr.data("row");
         c=$tr.children().first().data("id");
-    var cmV="["+trn+"],["+((c!=null&&c!=='')?c:"")+"],";
+    var cmV="["+trn+"],"+("["+((c!=null&&c!=='')?c:"")+"],");
         c=0;
     var flag=true;
     $vals.each(function(){
@@ -344,8 +344,14 @@ function commitChanges(tbodyID,tr,msg)
                 else
                     $t.val(v);
             }*/
-            else
+            else 
+            {
                 v=$t.val();
+                if(v==null||v=="")
+                    v=$t.parent().attr("data-id");
+                if(v==null||v=="")
+                    v="";
+            }
             c++;
             if($t.hasClass("number"))
                 v=keepNumericValue(v);//Function Fom NumberFields.js
@@ -799,7 +805,7 @@ function loadSourceSelect(d,tr,pos,src)
     {
         var $so=$("#"+src),
             $tb=$so.parent().siblings('table').children("tbody").eq(0);
-            //Will check if label contains other columns data from the DataBase
+            //Will check if the options label contains other columns' data from the DataBase
             $so.children().each(function(){
                 var $t=$(this),arr=$t.text().split(",["),n=arr.length;
                 $t.text(arr[0].replace("]",""));
@@ -811,7 +817,7 @@ function loadSourceSelect(d,tr,pos,src)
                     $t.attr("data-other",txt.slice(0,-1));
                 }
             });
-        displayValueList($tb,tr,pos,$so);
+        displayValueList("#"+$tb[0].id,tr,pos,$so);
     }
     event.stopPropagation();
 }
@@ -832,6 +838,8 @@ function displayValueList($tb,tr,pos,$so)
         $tb=$id.eq(pos);//Gets the in-portal select
     if($tb.children().size()>0)
         $id=$tb.children(":selected").val();
+    else if($tb.next().children().size()>0)
+        $id=$tb.children('.selected');
     else
         $id=$tb.closest('td').data("value");
     if($id==null)
@@ -845,12 +853,14 @@ function displayValueList($tb,tr,pos,$so)
         });
         $tr=$tr.parent().find(".unique").not($tr.find(".unique"));//filters already selected values in other TR's
         var vals=getUniqueValues($tr,$so);
-        $so.each(function(){
-            var n=vals.length,$t=$(this);
+        $so.each(function()
+        {
+            var n=vals.length;
             for(var i=0;i<n;i++)
-                if(Number(vals[i])===Number($t.val()))
-                    $t.attr('disabled',true);
+                if(vals[i]===Number(this.value))
+                    this.disabled=true;
         });
+        //disables previously selected values
     }
     else
     {
@@ -863,36 +873,67 @@ function displayValueList($tb,tr,pos,$so)
     $tb.children().remove();
     $tb.append($so);
     delete pos,$so;
-    var $sel=$tb.children().filter(function(){
-                 return $(this).val() === $id; 
-             });
-    $sel.attr('selected',true);
+    if($id!="")
+    {
+        var $sel=$tb.children().filter(function(){
+                     return this.value == $id; 
+                 });
+        $sel.attr('selected',true);
+    }
+    else $sel=new Array({value:"",text:$tb.text()});
     var $tbn=$tb.next(),tbSS=$tbn.attr('id'),tbID=tbSS+'src';
     $tb.attr('id',tbID);
     afterAjaxSelect(tbID,tbSS.replace('SS',''));//Function from the valuelistcontrols.js file
     delete tbID;
-    $tb.val($sel.val());
+    $tb.val($sel[0].value);
     $tb.blur();
-    $tb=$tb.next();
-    if($tb.text()==null || $tb.text()=="")
-        $tb.text($sel.text());
-    $tb.next().children().filter(function(){
-        return $(this).attr('rel') === $sel.val(); 
-    }).addClass('selected');
+    alert($id);
+    if($id=="")
+    {
+        $tb.next().text("");
+    }
+    else
+    {
+        $tb=$tb.next();
+        //if($tb.text()==null || $tb.text()=="")
+            $tb.text($sel.text());
+        $tb.next().children().filter(function(){
+            return $(this).attr('rel') == $id; 
+        }).addClass('selected');
+    }
     event.stopPropagation();
 }
 
 function getUniqueValues($set,$source){
     var vals=new Array();
     $set.each(function(){
-        var $t=$(this),val;
-        if($t.prop("nodeName")==='TD')
-            val=$t.data("value");
-        else val=$t.children(":selected").val();
-        if(val==='' || !val)
-            val=$t.data("value");
+        var val;
+        if(this.nodeName==='TD')
+            val=this.dataset.value;
+        else
+        {
+            var n=this.children.length;
+            if(n<1)
+                val=this.parentNode.parentNode.dataset.value;
+            else
+            {
+                for(var i=0;i<n;i++)
+                {
+                    val=this.children[i].disabled;
+                    if(val)
+                    {
+                        val=val.value;
+                        break;
+                    }
+                    else val="";
+                }
+            }
+        }
+        if(val==='' || val==null)
+            val=this.dataset.value;
+        val=Number(val);
         $source.each(function(){
-            if(Number($(this).val())===Number(val))
+            if(Number(this.value)===val)
                 vals.push(val);
         });
     });

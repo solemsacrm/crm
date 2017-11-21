@@ -201,6 +201,7 @@ public class ClientesCVS implements Serializable{
             fechaCliente="";
             fechaMigracion="";
             setBooleansTo(true);
+            lo=false;
         }
     }
     
@@ -296,6 +297,7 @@ public class ClientesCVS implements Serializable{
                     model2=dao.newCliente(model);
                     model.setZz_FechaModificacion(model2.getZz_FechaModificacion());
                     setBooleansTo(false);
+                    lo=false;
                 }
             }
         System.out.println("saveCliente METHOD PERFORMED");
@@ -578,11 +580,13 @@ public class ClientesCVS implements Serializable{
     public String getLogoPath()
     {
         String path=FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
-        if(model.getLogo()!=null)
-            if(!model.getLogo().isEmpty())
-                return path+model.getLogo();
+        if(lo)
+            if(model.getLogo()!=null)
+                if(!model.getLogo().isEmpty())
+                    return path+model.getLogo();
+                else return path+"/resources/img/logos/logoPH.png";
             else return path+"/resources/img/logos/logoPH.png";
-        else return path+"/resources/img/logos/logoPH.png";
+        return path+"/resources/img/logos/logoPH.png";
     }
     
     public void setLogoChange()

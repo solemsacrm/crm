@@ -157,7 +157,7 @@
                                 <div class="content">
                                     <div class="author">
                                         <h:form id="logoForm" enctype="multipart/form-data">
-                                            <img class="avatar border-gray" src="#{clientesCVS.logoPath}" onclick="this.nextSibling.click();"/>
+                                            <img class="avatar border-gray" src="#{clientesCVS.logoPath}" onclick="//this.nextSibling.click();"/>
                                             <h:inputFile id="file" value="#{clientesCVS.logo}" style="display:none;" onchange="$('#mainForm\\:logoChange').click();"/>
                                             <h:commandButton id="upload" value="Upload Logo" style="display:none;">
                                                 <f:ajax listener="#{clientesCVS.modificarLogo}" execute="file" render="@none" onevent="function(data){if(data.status==='success')$('#mainForm\\:mainFormBtn').click();}"/>
