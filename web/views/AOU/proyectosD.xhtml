@@ -53,7 +53,7 @@
                                                         <f:selectItems value="#{oUT_ProyectosCVS.clientes.list}" var="c" itemValue="#{c.id}" itemLabel="#{c.label}"/>
                                                         <f:ajax event="focus" render="IC" listener="#{oUT_ProyectosCVS.loadClientesList}" onevent="function(data){onClikVL(data,1,'IC');}" disabled="#{oUT_ProyectosCVS.clientes.length>0}"/>
                                                         <f:ajax event="focus" render="@none" onevent="function(data){onClikVL(data,0,'SS1');}" disabled="#{oUT_ProyectosCVS.clientes.length lt 1}"/>
-                                                        <f:ajax event="change" listener="#{oUT_ProyectosCVS.checkForChanges}" render="mainForm:mainFormBtnF"/>
+                                                        <f:ajax event="change" listener="#{oUT_ProyectosCVS.checkForChanges}" render="mainForm:mainFormBtnF mainForm:mainFormBtn"/>
                                                     </h:selectOneMenu>
                                                 </div>
                                             </div>
@@ -71,7 +71,7 @@
                                         </div>
                                                                                
                                         <h:commandButton id="mainFormBtn" value="Guardar Cambios" style="display:none;">
-                                            <f:ajax listener="#{oUT_ProyectosCVS.updateFormServicios()}" render="mainForm mainForm2" onevent="reRunJS" execute="@form"/>
+                                            <f:ajax listener="#{oUT_ProyectosCVS.updateFormServicios()}" render="mainForm mainForm2" onevent="function(data){reRunJS(data,#{oUT_ProyectosCVS.clientes.length>0});}" execute="@form"/>
                                         </h:commandButton>
                                         <h:commandButton id="mainFormBtnF" class="#{oUT_ProyectosCVS.cambios?'btn btn-success btn-fill pull-right':'btn btn-success pull-right'}" value="Guardar Cambios" onclick="fromAction(#{oUT_ProyectosCVS.cambios});return false;"/>
                                         <div class="clearfix"/>
@@ -126,12 +126,12 @@
                         else return true;
                     });
                 });
-                function reRunJS(data)
+                function reRunJS(data,ic)
                 {
                     if(data.status==="success")
                         //false al principio del codigo
                             //true porque fue despues de un ajax
-                        runJScode(true,false,false);
+                        runJScode(ic,false,false);
                 }
                 function deletionAlert()
                 {
