@@ -255,12 +255,14 @@ public class LogInBean implements Serializable{
     private void classesSwitch(Configuration cfg, int area)
     {
         switch(area)
-        {
+        {         
             case 6: if(usuario.getJur()>0)setJURClasess(cfg);if(usuario.getRex()>0)setREXClasses(cfg);break;
             case 5: setREXClasses(cfg);break;
             case 4: //
                     break;
             case 2: setJURClasess(cfg);break;
+            case 1: cfg.addAnnotatedClass(com.solemsa.hibernate.entities.AOU.OUT_Proyectos.class)
+                    .addAnnotatedClass(com.solemsa.hibernate.entities.AOU.OUT_Clientes.class);break;
         }
         cfg.setProperty("hibernate.connection.username",usuario.getPerfil())
         .setProperty("hibernate.connection.password",usuario.getPass());
